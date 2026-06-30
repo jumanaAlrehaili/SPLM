@@ -1,9 +1,13 @@
-.devops/                @@devops
-pipeline.code           @@devops
-bamboo-specs/           @@devops
-Dockerfile              @@devops
-*.Dockerfile            @@devops
-Makefile                @@devops
-pipeline-ci.yaml        @@devops
-CODEOWNERS              @@devops
-OverallCheck(1)
+# Default owner for all files
+* @jumanaAlrehaili
+
+# Backend
+/backend/ @jumanaAlrehaili
+
+# Frontend
+/frontend/ @jumanaAlrehaili
+
+# Repository documentation and configuration
+README.md @jumanaAlrehaili
+CODEOWNERS @jumanaAlrehaili
+LICENCE @jumanaAlrehaili
