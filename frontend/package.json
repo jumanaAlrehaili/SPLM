@@ -1,0 +1,44 @@
+{
+  "name": "pd-management-ui",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "api-generate": "set \"PATH=C:\\Program Files\\Eclipse Adoptium\\jdk-17.0.19.10-hotspot\\bin;%PATH%\" && openapi-generator-cli generate -i http://localhost:7254/swagger/v1/swagger.json -g typescript-angular -o src/app/api --skip-validate-spec"
+  },
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "dependencies": {
+    "@angular/animations": "^21.2.12",
+    "@angular/common": "^21.2.0",
+    "@angular/compiler": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/forms": "^21.2.0",
+    "@angular/platform-browser": "^21.2.0",
+    "@angular/router": "^21.2.0",
+    "@microsoft/signalr": "^10.0.0",
+    "@primeng/themes": "^21.0.4",
+    "@primeuix/styled": "^0.7.4",
+    "@primeuix/themes": "^2.0.3",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
+    "primeflex": "^4.0.0",
+    "primeicons": "^7.0.0",
+    "primeng": "^21.1.6",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.7",
+    "@angular/cli": "^21.2.7",
+    "@angular/compiler-cli": "^21.2.0",
+    "@openapitools/openapi-generator-cli": "^2.32.0",
+    "jsdom": "^28.0.0",
+    "prettier": "^3.8.1",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
+  }
+}

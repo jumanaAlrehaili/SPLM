@@ -1,0 +1,17 @@
+export * from './auth.service';
+import { AuthService } from './auth.service';
+export * from './features.service';
+import { FeaturesService } from './features.service';
+export * from './holidays.service';
+import { HolidaysService } from './holidays.service';
+export * from './lookups.service';
+import { LookupsService } from './lookups.service';
+export * from './notifications.service';
+import { NotificationsService } from './notifications.service';
+export * from './project.service';
+import { ProjectService } from './project.service';
+export * from './releasePlans.service';
+import { ReleasePlansService } from './releasePlans.service';
+export * from './releaseStages.service';
+import { ReleaseStagesService } from './releaseStages.service';
+export const APIS = [AuthService, FeaturesService, HolidaysService, LookupsService, NotificationsService, ProjectService, ReleasePlansService, ReleaseStagesService];

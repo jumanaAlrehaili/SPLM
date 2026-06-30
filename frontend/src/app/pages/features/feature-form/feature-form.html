@@ -1,0 +1,50 @@
+<p-toast></p-toast>
+<form [formGroup]="featureForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-3 mt-2">
+
+  <div class="flex flex-column gap-1">
+    <label for="title" class="font-medium text-900">Title <span class="text-danger">*</span></label>
+    <input pInputText id="title" formControlName="title" placeholder="Enter feature title" class="w-full"
+      [ngClass]="{'ng-invalid ng-dirty': featureForm.get('title')?.touched && featureForm.get('title')?.invalid}" />
+    <small class="text-danger"
+      *ngIf="featureForm.get('title')?.touched && featureForm.get('title')?.errors?.['required']">Title is
+      required.</small>
+    <small class="text-danger"
+      *ngIf="featureForm.get('title')?.touched && featureForm.get('title')?.errors?.['minlength']">Title must be at
+      least 3 characters long.</small>
+  </div>
+
+  <div class="flex flex-column gap-1">
+    <label for="description" class="font-medium text-900">Description <span class="text-danger">*</span></label>
+    <textarea pTextarea id="description" formControlName="description" rows="4"
+      placeholder="Enter detailed technical description..." class="w-full"
+      [ngClass]="{'ng-invalid ng-dirty': featureForm.get('description')?.touched && featureForm.get('description')?.invalid}"></textarea>
+    <small class="text-danger"
+      *ngIf="featureForm.get('description')?.touched && featureForm.get('description')?.errors?.['required']">Description
+      is required.</small>
+    <small class="text-danger"
+      *ngIf="featureForm.get('description')?.touched && featureForm.get('description')?.errors?.['minlength']">Description
+      must be at least 10 characters long.</small>
+  </div>
+
+  <div class="grid">
+    <div class="col-12 md:col-6 flex flex-column gap-1">
+      <label for="priority" class="font-medium text-900">Priority <span class="text-danger">*</span></label>
+      <p-select id="priority" [options]="priorityOptions()" formControlName="priority" optionLabel="label"
+        optionValue="value" placeholder="Select Priority" appendTo="body" class="w-full"></p-select>
+    </div>
+
+    <div class="col-12 md:col-6 flex flex-column gap-1">
+      <label for="epicLink" class="font-medium text-900">Epic Link</label>
+      <input pInputText id="epicLink" formControlName="epicLink" placeholder="Paste link here" class="w-full" />
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2 mt-3 pt-3 border-top-1 border-300">
+    <p-button label="Cancel" severity="secondary" [outlined]="true" (click)="cancel()"
+      [disabled]="isSubmitting()"></p-button>
+    <p-button [label]="isSubmitting() ? 'Saving...' : (featureData ? 'Update Feature' : 'Create Feature')" type="submit"
+      severity="primary" [icon]="isSubmitting() ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+      [disabled]="featureForm.invalid || isSubmitting()"></p-button>
+  </div>
+
+</form>

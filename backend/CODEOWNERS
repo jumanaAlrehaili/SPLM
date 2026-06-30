@@ -1,0 +1,9 @@
+.devops/                @@devops
+pipeline.code           @@devops
+bamboo-specs/           @@devops
+Dockerfile              @@devops
+*.Dockerfile            @@devops
+Makefile                @@devops
+pipeline-ci.yaml        @@devops
+CODEOWNERS              @@devops
+OverallCheck(1)

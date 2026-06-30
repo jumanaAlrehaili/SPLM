@@ -1,0 +1,141 @@
+<div class="auth-split">
+
+  <!-- ===== Left branding panel ===== -->
+  <div class="auth-split__left">
+    <a routerLink="/" class="auth-brand">
+      <img src="/assets/images/SPLM_logo.png" alt="SPLM" class="auth-brand__logo" />
+    </a>
+
+    <div class="auth-brand__body">
+      <p class="auth-brand__eyebrow">Enterprise Software PLM</p>
+      <h1 class="auth-brand__headline">Join teams already shipping faster.</h1>
+      <ul class="auth-brand__features">
+        <li><i class="pi pi-check"></i> Free to start, no credit card needed</li>
+        <li><i class="pi pi-check"></i> Full access to projects and features</li>
+        <li><i class="pi pi-check"></i> Collaborate with your team instantly</li>
+      </ul>
+    </div>
+
+    <p class="auth-brand__back">
+      <a routerLink="/"><i class="pi pi-arrow-left"></i> Back to home</a>
+    </p>
+  </div>
+
+  <!-- ===== Right form panel ===== -->
+  <div class="auth-split__right">
+    <div class="auth-form-panel">
+
+      <h2 class="auth-form-panel__title">Create account</h2>
+      <p class="auth-form-panel__subtitle">Get started for free. No credit card required.</p>
+
+      <!-- Success state -->
+      @if (successMessage()) {
+        <div class="auth-alert auth-alert--success">
+          <i class="pi pi-check-circle"></i>
+          <span>{{ successMessage() }}</span>
+        </div>
+        <button class="carbon-submit" (click)="navigateToLogin()">
+          Go to sign in <i class="pi pi-arrow-right"></i>
+        </button>
+      }
+
+      <!-- Error -->
+      @if (errorMessage()) {
+        <div class="auth-alert auth-alert--error">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      @if (!successMessage()) {
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="carbon-form-grid">
+
+          <div class="carbon-field">
+            <label class="carbon-label" for="reg-name">Full name <span class="text-danger">*</span></label>
+            <input
+              id="reg-name" type="text" formControlName="name"
+              class="carbon-input"
+              placeholder="Jane Smith"
+              [class.carbon-input--error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+            />
+            @if (registerForm.get('name')?.invalid && registerForm.get('name')?.touched) {
+              <span class="carbon-error">Full name is required</span>
+            }
+          </div>
+
+          <div class="carbon-field">
+            <label class="carbon-label" for="reg-role">Role <span class="text-danger">*</span></label>
+            <select
+              id="reg-role" formControlName="roleId"
+              class="carbon-select"
+              [class.carbon-input--error]="registerForm.get('roleId')?.invalid && registerForm.get('roleId')?.touched"
+            >
+              <option [ngValue]="null" disabled>Select a role...</option>
+              @for (role of roles(); track role.id) {
+                <option [value]="role.id">{{ role.name }}</option>
+              }
+            </select>
+            @if (registerForm.get('roleId')?.invalid && registerForm.get('roleId')?.touched) {
+              <span class="carbon-error">Role is required</span>
+            }
+          </div>
+
+          <div class="carbon-field carbon-field--full">
+            <label class="carbon-label" for="reg-email">Work email <span class="text-danger">*</span></label>
+            <input
+              id="reg-email" type="email" formControlName="email"
+              class="carbon-input"
+              placeholder="name@company.com"
+              [class.carbon-input--error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+            />
+            @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+              @if (registerForm.get('email')?.errors?.['required']) {
+                <span class="carbon-error">Email is required</span>
+              } @else {
+                <span class="carbon-error">Enter a valid email address</span>
+              }
+            }
+          </div>
+
+          <div class="carbon-field carbon-field--full">
+            <label class="carbon-label" for="reg-password">Password <span class="text-danger">*</span></label>
+            <input
+              id="reg-password" type="password" formControlName="password"
+              class="carbon-input"
+              placeholder="••••••••"
+              [class.carbon-input--error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            />
+            @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+              @if (registerForm.get('password')?.errors?.['required']) {
+                <span class="carbon-error">Password is required</span>
+              } @else if (registerForm.get('password')?.errors?.['minlength']) {
+                <span class="carbon-error">Password must be at least 6 characters</span>
+              }
+            } @else {
+              <span class="carbon-hint">Minimum 6 characters</span>
+            }
+          </div>
+
+          <div class="carbon-field--full">
+            <button type="submit" class="carbon-submit" [disabled]="isLoading()">
+              @if (isLoading()) {
+                <span class="carbon-spinner"></span>
+              } @else {
+                Create account <i class="pi pi-arrow-right"></i>
+              }
+            </button>
+          </div>
+
+          <div class="carbon-field--full">
+            <p class="auth-form-panel__switch">
+              Already have an account? <a routerLink="/login">Sign in</a>
+            </p>
+          </div>
+
+        </form>
+      }
+
+    </div>
+  </div>
+
+</div>

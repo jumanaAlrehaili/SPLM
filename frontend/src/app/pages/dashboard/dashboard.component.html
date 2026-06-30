@@ -1,0 +1,77 @@
+<div class="layout-wrapper">
+  <!-- Topbar/Header -->
+  <div class="layout-topbar">
+    <div class="flex align-items-center gap-3">
+      <p-button icon="pi pi-bars" (onClick)="toggleSidebar()" [text]="true" [rounded]="true"></p-button>
+      <img src="assets/images/SPLM_logo.png" alt="SPLM" class="topbar-logo" />
+    </div>
+    <div class="flex align-items-center gap-1">
+      <!-- Notifications bell -->
+      <div class="notif-bell-wrap">
+        <p-button icon="pi pi-bell" (onClick)="notifPanel.toggle($event)" [text]="true" [rounded]="true" pTooltip="Notifications" tooltipPosition="bottom"></p-button>
+        @if (notificationService.unreadCount() > 0) {
+          <span class="notif-badge">{{ notificationService.unreadCount() > 99 ? '99+' : notificationService.unreadCount() }}</span>
+        }
+      </div>
+
+      <p-button [icon]="darkMode ? 'pi pi-sun' : 'pi pi-moon'" (onClick)="toggleTheme()" [text]="true" [rounded]="true" [pTooltip]="darkMode ? 'Light mode' : 'Dark mode'" tooltipPosition="bottom"></p-button>
+      <p-button (onClick)="accountMenu.toggle($event)" [text]="true" [rounded]="true" pTooltip="Account" tooltipPosition="bottom" styleClass="p-0 overflow-hidden avatar-button">
+        <p-avatar *ngIf="currentUser$ | async as user; else guest" [label]="getInitials(user.email)" shape="circle" styleClass="header-avatar"></p-avatar>
+        <ng-template #guest>
+          <p-avatar icon="pi pi-user" shape="circle" styleClass="header-avatar"></p-avatar>
+        </ng-template>
+      </p-button>
+      <p-menu #accountMenu [model]="accountItems" [popup]="true"></p-menu>
+    </div>
+  </div>
+
+  <!-- Notifications popover -->
+  <p-popover #notifPanel>
+    <div class="notif-panel">
+      <div class="notif-panel__header">
+        <span class="notif-panel__title">Notifications</span>
+        @if (notificationService.notifications().length > 0) {
+          <div class="notif-panel__actions">
+            <button class="notif-panel__link" (click)="markAllNotificationsRead()">Mark all read</button>
+            <button class="notif-panel__link" (click)="clearNotifications()">Clear</button>
+          </div>
+        }
+      </div>
+
+      @if (notificationService.notifications().length === 0) {
+        <div class="notif-panel__empty">
+          <i class="pi pi-bell-slash"></i>
+          <span>No notifications yet</span>
+        </div>
+      } @else {
+        <ul class="notif-list">
+          @for (n of notificationService.notifications(); track $index) {
+            <li class="notif-item" [class.notif-item--unread]="!n.isRead" (click)="notificationService.markRead(n.id)">
+              <i class="notif-item__icon" [class]="notificationIcon(n.type)"></i>
+              <div class="notif-item__body">
+                <span class="notif-item__title">{{ n.title || 'Notification' }}</span>
+                <span class="notif-item__message">{{ n.message }}</span>
+                <span class="notif-item__time">{{ n.createdAt | date:'short' }}</span>
+              </div>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </p-popover>
+
+  <!-- Toast outlet for real-time notifications -->
+  <p-toast position="top-right"></p-toast>
+
+  <div class="layout-main-container">
+    <!-- Sidebar -->
+    <aside class="layout-sidebar" [class.collapsed]="!sidebarVisible">
+      <p-panelMenu [model]="items" styleClass="w-full border-none"></p-panelMenu>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="layout-content" [class.sidebar-open]="sidebarVisible">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

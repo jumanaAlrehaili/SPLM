@@ -1,0 +1,32 @@
+textarea {
+  resize: none;
+  width: 100% !important;
+  height: 75px !important;
+}
+
+.text-danger {
+  color: var(--p-red-400) !important;
+  font-size: 0.8rem;
+}
+
+::v-deep(.p-select) {
+  width: 100% !important;
+  background: var(--p-surface-card) !important;
+  border-color: var(--p-content-border-color) !important;
+}
+
+::v-deep(.p-datepicker) {
+  width: 100% !important;
+  input {
+    background: var(--p-surface-card) !important;
+    border-color: var(--p-content-border-color) !important;
+  }
+}
+
+.border-top-1 {
+  border-top: 1px solid var(--p-content-border-color) !important;
+}
+
+.flex-1 {
+  flex: none !important;
+}

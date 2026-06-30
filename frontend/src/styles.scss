@@ -1,0 +1,327 @@
+/* ===== IBM Plex Sans ===== */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap');
+
+/* ===== Bootstrap + Icon sets ===== */
+@import "bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+$bootstrap-icons-font-src: url("https://localhost:4200/assets/fonts/bootstrap-icons.woff2");
+
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+
+/* ===== Carbon Design System tokens ===== */
+:root {
+  --c-primary:          #0f62fe;
+  --c-primary-hover:    #0353e9;
+  --c-primary-pressed:  #002d9c;
+  --c-canvas:           #ffffff;
+  --c-surface-1:        #f4f4f4;
+  --c-surface-2:        #e0e0e0;
+  --c-hairline:         #e0e0e0;
+  --c-hairline-strong:  #161616;
+  --c-ink:              #161616;
+  --c-ink-muted:        #525252;
+  --c-ink-subtle:       #8c8c8c;
+  --c-inverse-canvas:   #161616;
+  --c-inverse-surface-1:#262626;
+  --c-inverse-ink:      #ffffff;
+  --c-inverse-ink-muted:#c6c6c6;
+  --c-on-primary:       #ffffff;
+  --c-success:          #24a148;
+  --c-warning:          #f1c21b;
+  --c-error:            #da1e28;
+}
+
+/* ===== Global dark/light theme support (PrimeNG) ===== */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--p-surface-ground);
+  color: var(--p-text-color);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, label, a {
+  color: inherit;
+}
+
+/* ===== Shared landing utilities ===== */
+
+.container-max {
+  max-width: 1312px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  @media (max-width: 672px) {
+    padding: 0 16px;
+  }
+}
+
+/* Carbon eyebrow */
+.eyebrow {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  color: var(--c-ink-muted);
+  margin: 0 0 16px;
+  text-transform: none;
+
+  &--light {
+    color: var(--c-inverse-ink-muted);
+  }
+}
+
+/* Section header block */
+.section-header {
+  max-width: 640px;
+  margin: 0 auto 64px;
+  text-align: center;
+}
+
+.section-headline {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 1.20;
+  color: var(--c-ink);
+  margin: 0 0 16px;
+
+  @media (max-width: 672px) {
+    font-size: 28px;
+  }
+}
+
+.section-body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 18px;
+  line-height: 1.50;
+  color: var(--c-ink-muted);
+  margin: 0;
+}
+
+/* ===== Carbon Buttons ===== */
+/* All buttons: 0px border-radius, 14px IBM Plex Sans */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--c-primary);
+  color: var(--c-on-primary) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  line-height: 1.29;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+  user-select: none;
+
+  &:hover {
+    background: var(--c-primary-hover);
+    color: var(--c-on-primary) !important;
+    text-decoration: none;
+  }
+
+  &:active {
+    background: var(--c-primary-pressed);
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--c-ink);
+  color: var(--c-inverse-ink) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    background: #393939;
+    color: var(--c-inverse-ink) !important;
+    text-decoration: none;
+  }
+}
+
+.btn-tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: var(--c-canvas);
+  color: var(--c-primary) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  border: 1px solid var(--c-primary);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--c-surface-1);
+    color: var(--c-primary) !important;
+    text-decoration: none;
+  }
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: transparent;
+  color: var(--c-primary) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--c-surface-1);
+    color: var(--c-primary) !important;
+    text-decoration: none;
+  }
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--c-canvas);
+  color: var(--c-primary) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--c-surface-1);
+    color: var(--c-primary) !important;
+    text-decoration: none;
+  }
+}
+
+.btn-ghost-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: transparent;
+  color: var(--c-inverse-ink) !important;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.16px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    color: var(--c-inverse-ink) !important;
+    text-decoration: none;
+  }
+}
+
+.btn-lg {
+  padding: 14px 24px;
+  font-size: 16px;
+}
+
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ===== CTA Banner (shared across landing pages) ===== */
+.cta-banner {
+  background: var(--c-primary);
+  padding: 48px 0;
+
+  .container-max {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 32px;
+
+    @media (max-width: 1056px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__headline {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--c-on-primary);
+    margin: 0 0 8px;
+
+    @media (max-width: 672px) {
+      font-size: 24px;
+    }
+  }
+
+  &__body {
+    font-size: 16px;
+    line-height: 1.50;
+    letter-spacing: 0.16px;
+    color: rgba(255, 255, 255, 0.80);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    flex-shrink: 0;
+  }
+}

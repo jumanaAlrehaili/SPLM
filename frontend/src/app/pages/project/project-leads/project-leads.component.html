@@ -1,0 +1,48 @@
+<p-dialog 
+  header="Manage Project Leads" 
+  [(visible)]="visible" 
+  [modal]="true" 
+  [style]="{ width: '50vw' }" 
+  [draggable]="false" 
+  [resizable]="false">
+  
+  <p-table [value]="leads()" [loading]="loading()" responsiveLayout="scroll" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Lead Role</th>
+        <th>Assigned Leader</th>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="body" let-lead>
+      <tr>
+        <td>
+          <span class="font-bold">{{ lead.leadRoleName }}</span>
+        </td>
+        
+        <td>
+          <p-select 
+            [options]="projectResources()" 
+            [(ngModel)]="lead.userId" 
+            optionValue="userId" 
+            optionLabel="userName" 
+            placeholder="Select a Leader"
+            appendTo="body"
+            [style]="{ width: '100%' }"
+            (onChange)="onLeadChange(lead.leadRoleId, $event.value)">
+          </p-select>
+        </td>
+      </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="2" class="text-center p-4">No leads defined for this project.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Close" icon="pi pi-times" styleClass="p-button-text" (click)="visible.set(false)"></p-button>
+  </ng-template>
+</p-dialog>

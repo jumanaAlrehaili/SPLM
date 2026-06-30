@@ -1,0 +1,222 @@
+<p-toast></p-toast>
+<div class="p-4 mx-auto" style="max-width: 1100px;">
+
+  <p-button label="Back to Features" icon="pi pi-arrow-left" [text]="true" (onClick)="goBack()" class="mb-3"></p-button>
+
+  <div *ngIf="loading()" class="text-center p-5">
+    <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+  </div>
+
+  <div *ngIf="!loading() && feature()" class="surface-card p-5 border-round-xl shadow-2">
+
+    <div class="flex align-items-center gap-3 mb-4 pb-3 border-bottom-1 surface-border">
+      <h1 class="m-0 text-color font-bold text-3xl tracking-tight">{{ feature().title }}</h1>
+      <p-tag [value]="feature().status" [severity]="getStatusSeverity(feature().status)"
+        styleClass="text-sm px-3 py-1 font-semibold border-round-md"></p-tag>
+    </div>
+
+    <div class="grid row-gap-4 column-gap-0 mb-4">
+
+      <div class="col-12 md:col-4 flex align-items-start gap-3">
+        <i class="pi pi-user text-primary text-xl mt-1"></i>
+        <div class="flex flex-column">
+          <span class="text-color-secondary uppercase text-xs font-bold tracking-wider mb-1">Created By</span>
+          <span class="text-color font-bold text-sm">{{ feature().createdBy }}</span>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4 flex align-items-start gap-3">
+        <i class="pi pi-calendar text-primary text-xl mt-1"></i>
+        <div class="flex flex-column">
+          <span class="text-color-secondary uppercase text-xs font-bold tracking-wider mb-1">Created At</span>
+          <span class="text-color font-bold text-sm">{{ feature().createdAt | date:'MMMM d, y, h:mm:ss a' }}</span>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4 flex align-items-start gap-3">
+        <i class="pi pi-exclamation-circle text-primary text-xl mt-1"></i>
+        <div class="flex flex-column align-items-start">
+          <span class="text-color-secondary uppercase text-xs font-bold tracking-wider mb-1">Priority Level</span>
+          <p-tag [value]="getPriorityLabel(feature().priorityId)" [severity]="getPrioritySeverity(feature().priorityId)"
+            styleClass="font-bold px-2 py-0.5 text-xs border-round-sm"></p-tag>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4 flex align-items-start gap-3">
+        <i class="pi pi-tag text-primary text-xl mt-1"></i>
+        <div class="flex flex-column">
+          <span class="text-color-secondary uppercase text-xs font-bold tracking-wider mb-1">Target Release</span>
+          <span class="text-color font-bold text-sm">
+            {{ feature().release?.name || 'Not Assigned Yet' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="col-12 md:col-4 flex align-items-start gap-3">
+        <i class="pi pi-link text-primary text-xl mt-1"></i>
+        <div class="flex flex-column">
+          <span class="text-color-secondary uppercase text-xs font-bold tracking-wider mb-1">Epic Link</span>
+          <a *ngIf="feature().epicLink" [href]="feature().epicLink" target="_blank"
+            class="text-primary font-bold text-sm hover:underline inline-flex align-items-center gap-1">
+            View Link <i class="pi pi-external-link text-xs"></i>
+          </a>
+          <span *ngIf="!feature().epicLink" class="text-color-secondary text-sm italic">No Link Attached</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="border-top-1 surface-border my-4"></div>
+
+    <div class="mb-5 flex flex-column gap-2">
+      <div class="flex align-items-center gap-2 text-color font-bold text-lg">
+        <i class="pi pi-align-left text-primary"></i>
+        <span>Description</span>
+      </div>
+      <p class="text-color-secondary m-0 line-height-3 text-sm pl-5 font-medium">
+        {{ feature().description }}
+      </p>
+    </div>
+
+    <div class="border-top-1 surface-border mt-5 pt-4">
+      <div class="flex align-items-center gap-2 mb-4">
+        <i class="pi pi-sitemap text-primary text-xl"></i>
+        <h2 class="m-0 text-color font-bold text-xl">Feature Workflow</h2>
+      </div>
+
+      <div class="stepper-container">
+        <div *ngFor="let assignment of feature().assignments; let i = index" class="step-wrapper"
+          [class.prev-completed]="isPathDone(i)">
+          <div class="step-marker" [class.active]="isActiveStage(i, feature().assignments)"
+            [class.completed]="isStageCompleted(i)">
+            <i *ngIf="isStageCompleted(i)" class="pi pi-check"></i>
+            <span *ngIf="!isStageCompleted(i)">{{ i + 1 }}</span>
+          </div>
+
+          <div class="step-content" [class.active-card]="isActiveStage(i, feature().assignments)">
+            <div class="step-header">
+              <div class="step-title">{{ assignment.stageName }}</div>
+
+              <div class="est-badge" *ngIf="assignment.startedAt && assignment.estimation">
+                <i class="pi pi-clock"></i>
+                <span class="est-value">{{ assignment.estimation }} {{ assignment.estimationUnitName }}</span>
+              </div>
+
+              <div class="est-badge"
+                *ngIf="isActiveStage(i, feature().assignments) && assignment.userId === currentUserId && !assignment.startedAt"
+                (click)="openEstimationDialog(assignment)">
+                <i class="pi pi-clock"></i>
+                <span class="est-value">
+                  {{ assignment.estimation ? (assignment.estimation + ' ' + assignment.estimationUnitName) : 'Add Estimate' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="step-actions">
+
+              <div class="stage-field-row assignee-inline-row">
+                <span class="label">Assignee:</span>
+
+                <div class="stage-field-control assignee-inline-control">
+                  <ng-container *ngIf="!isStageCompleted(i) && (feature().permissions?.isPM ||
+                 feature().permissions?.leadStageIds?.includes(assignment.stageId));
+                 else showName">
+
+                    <div class="assignee-select-wrap">
+                      <p-select [options]="availableResources()" optionLabel="fullName" optionValue="userId"
+                        [placeholder]="assignment.userName || 'Select User'" appendTo="body"
+                        styleClass="assignee-select" (onFocus)="loadResourcesForStage(assignment.stageId)"
+                        (onChange)="onAssign($event.value, assignment.stageId)">
+                      </p-select>
+
+                      <p-button *ngIf="assignment.userId && !isStageCompleted(i) &&
+                   (feature().permissions?.isPM ||feature().permissions?.leadStageIds?.includes(assignment.stageId))"
+                        icon="pi pi-user-minus" severity="danger" [text]="true" pTooltip="Unassign user"
+                        tooltipPosition="top" (onClick)="onAssign(null, assignment.stageId)">
+                      </p-button>
+                    </div>
+
+                  </ng-container>
+
+                  <ng-template #showName>
+                    <div class="assignee-pill">
+                      <i class="pi pi-user"></i>
+                      <span>{{ assignment.userName || 'Unassigned' }}</span>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+
+              <div class="action-box">
+                <p-button
+                  *ngIf="isActiveStage(i, feature().assignments) && !assignment.startedAt && assignment.userId === currentUserId"
+                  label="Start Stage" icon="pi pi-play" styleClass="p-button-sm p-button-primary"
+                  (onClick)="onStartStage(assignment.stageId)">
+                </p-button>
+
+                <p-button *ngIf="assignment.startedAt && canComplete(assignment, i, feature().assignments)"
+                  label="Complete Stage" styleClass="p-button-sm p-button-success p-button-raised"
+                  [disabled]="submittingStage()" (onClick)="onCompleteStage(assignment.stageId)">
+                </p-button>
+
+                <p-button *ngIf="assignment.startedAt && canReject(assignment, i, feature().assignments)" label="Reject"
+                  styleClass="p-button-sm p-button-danger p-button-raised ml-2" [disabled]="submittingStage()"
+                  (onClick)="rejectStage(assignment.stageId)">
+                </p-button>
+
+                <div *ngIf="isStageCompleted(i)" class="status-pill status-done">
+                  <i class="pi pi-check-circle"></i> Completed
+                </div>
+
+                <div *ngIf="!isStageCompleted(i) && !isActiveStage(i, feature().assignments)"
+                  class="status-pill status-locked" pTooltip="Waiting for previous stage" tooltipPosition="top">
+                  <i class="pi pi-lock"></i> Locked
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Set Estimation Dialog -->
+        <p-dialog header="Set Estimation" [(visible)]="showEstimationDialog" [modal]="true" [style]="{width: '280px'}"
+          styleClass="estimation-dialog">
+
+          <div class="estimation-dialog-body">
+            <div class="field">
+              <label class="estimation-label">Value</label>
+              <input type="number" pInputText [(ngModel)]="estimationValue"
+                class="w-full p-inputtext-sm estimation-input" placeholder="e.g. 5" />
+            </div>
+
+            <div class="field">
+              <label class="estimation-label">Unit</label>
+              <p-select [options]="estimationUnits()" optionLabel="name" optionValue="id" [(ngModel)]="selectedUnitId"
+                placeholder="Select Unit" styleClass="estimation-select">
+              </p-select>
+            </div>
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div class="estimation-dialog-footer">
+              <p-button label="Cancel" [text]="true" severity="secondary" size="small"
+                (click)="showEstimationDialog = false">
+              </p-button>
+
+              <p-button label="Save" size="small" (click)="submitEstimation()">
+              </p-button>
+            </div>
+          </ng-template>
+        </p-dialog>
+
+        <!-- Reject Dialog -->
+        <p-dialog header="Reason for Rejection" [(visible)]="showCommentDialog" [modal]="true"
+          [style]="{width: '350px'}">
+          <div class="field">
+            <textarea pInputTextarea [(ngModel)]="rejectionComment" rows="4" class="w-full"
+              placeholder="Enter the reason for rejection here..."></textarea>
+          </div>
+          <ng-template pTemplate="footer">
+            <button pButton label="Cancel" class="p-button-text" (click)="showCommentDialog = false"></button>
+            <button pButton label="Submit" (click)="submitRejection()"></button>
+          </ng-template>
+        </p-dialog>

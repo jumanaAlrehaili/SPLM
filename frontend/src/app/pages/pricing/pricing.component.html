@@ -1,0 +1,165 @@
+<!-- ===== Hero ===== -->
+<section class="pricing-hero">
+  <div class="container-max">
+    <p class="eyebrow">Pricing</p>
+    <h1 class="pricing-hero__headline">Simple, transparent pricing</h1>
+    <p class="pricing-hero__body">
+      Start for free. Upgrade as your team grows. No hidden fees, no seat-based surprises.
+    </p>
+
+    <div class="billing-toggle">
+      <span class="billing-toggle__label" [class.active]="!annual()">Monthly</span>
+      <button
+        class="billing-toggle__track"
+        (click)="toggleBilling()"
+        [attr.aria-pressed]="annual()"
+        aria-label="Toggle annual billing"
+      >
+        <span class="billing-toggle__thumb" [class.on]="annual()"></span>
+      </button>
+      <span class="billing-toggle__label" [class.active]="annual()">
+        Annual <span class="billing-toggle__save">Save 20%</span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Pricing cards ===== -->
+<section class="pricing-section">
+  <div class="container-max">
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-card__header">
+          <p class="pricing-card__plan">Starter</p>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">$0</span>
+          </div>
+          <p class="pricing-card__period">Free forever</p>
+          <p class="pricing-card__desc">For individuals and small teams just getting started.</p>
+        </div>
+        <div class="pricing-card__divider"></div>
+        <ul class="pricing-card__features">
+          <li class="available"><i class="pi pi-check"></i> Up to 3 active projects</li>
+          <li class="available"><i class="pi pi-check"></i> Up to 5 team members</li>
+          <li class="available"><i class="pi pi-check"></i> Unlimited features</li>
+          <li class="available"><i class="pi pi-check"></i> Basic release planning</li>
+          <li class="available"><i class="pi pi-check"></i> Community support</li>
+          <li class="unavailable"><i class="pi pi-minus"></i> Advanced analytics</li>
+          <li class="unavailable"><i class="pi pi-minus"></i> API access</li>
+          <li class="unavailable"><i class="pi pi-minus"></i> SSO / SAML</li>
+        </ul>
+        <div class="pricing-card__footer">
+          <a routerLink="/register" class="btn-tertiary btn-block">Get started free</a>
+        </div>
+      </div>
+
+      <!-- Professional -->
+      <div class="pricing-card pricing-card--featured">
+        <div class="pricing-card__badge">Most popular</div>
+        <div class="pricing-card__header">
+          <p class="pricing-card__plan">Professional</p>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">{{ annual() ? '$23' : '$29' }}</span>
+          </div>
+          <p class="pricing-card__period">per user / month{{ annual() ? ', billed annually' : '' }}</p>
+          <p class="pricing-card__desc">For growing product teams managing multiple projects.</p>
+        </div>
+        <div class="pricing-card__divider"></div>
+        <ul class="pricing-card__features">
+          <li class="available"><i class="pi pi-check"></i> Unlimited projects</li>
+          <li class="available"><i class="pi pi-check"></i> Unlimited team members</li>
+          <li class="available"><i class="pi pi-check"></i> Unlimited features</li>
+          <li class="available"><i class="pi pi-check"></i> Advanced release planning</li>
+          <li class="available"><i class="pi pi-check"></i> Priority email support</li>
+          <li class="available"><i class="pi pi-check"></i> Advanced analytics</li>
+          <li class="available"><i class="pi pi-check"></i> REST API access</li>
+          <li class="unavailable"><i class="pi pi-minus"></i> SSO / SAML</li>
+        </ul>
+        <div class="pricing-card__footer">
+          <a routerLink="/register" class="btn-primary btn-block">Start 14-day free trial</a>
+        </div>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-card__header">
+          <p class="pricing-card__plan">Enterprise</p>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">Custom</span>
+          </div>
+          <p class="pricing-card__period">Contact us for pricing</p>
+          <p class="pricing-card__desc">For large organizations with enterprise-grade requirements.</p>
+        </div>
+        <div class="pricing-card__divider"></div>
+        <ul class="pricing-card__features">
+          <li class="available"><i class="pi pi-check"></i> Everything in Professional</li>
+          <li class="available"><i class="pi pi-check"></i> SSO / SAML integration</li>
+          <li class="available"><i class="pi pi-check"></i> Custom roles and permissions</li>
+          <li class="available"><i class="pi pi-check"></i> Dedicated customer success</li>
+          <li class="available"><i class="pi pi-check"></i> SLA guarantees</li>
+          <li class="available"><i class="pi pi-check"></i> Audit logs and compliance</li>
+          <li class="available"><i class="pi pi-check"></i> On-premise deployment option</li>
+          <li class="available"><i class="pi pi-check"></i> Volume discounts</li>
+        </ul>
+        <div class="pricing-card__footer">
+          <a routerLink="/contact" class="btn-secondary btn-block">Contact sales</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== Feature comparison note ===== -->
+<div class="compare-band">
+  <div class="container-max compare-band__inner">
+    <p class="compare-band__text">
+      All plans include data export, two-factor authentication, and 99.9% uptime SLA.
+    </p>
+    <a routerLink="/contact" class="compare-band__link">
+      Compare all features <i class="pi pi-arrow-right"></i>
+    </a>
+  </div>
+</div>
+
+<!-- ===== FAQ ===== -->
+<section class="faq-section">
+  <div class="container-max faq-section__inner">
+    <div class="section-header" style="text-align:left; margin-bottom:40px; max-width:none;">
+      <p class="eyebrow">Questions</p>
+      <h2 class="section-headline" style="text-align:left;">Frequently asked questions</h2>
+    </div>
+
+    <div class="faq-list">
+      @for (faq of faqs; track faq.question; let i = $index) {
+        <div class="faq-item" [class.faq-item--open]="faq.open">
+          <button class="faq-item__question" (click)="toggleFaq(i)">
+            <span>{{ faq.question }}</span>
+            <i class="pi" [class.pi-add]="!faq.open" [class.pi-minus]="faq.open"></i>
+          </button>
+          @if (faq.open) {
+            <div class="faq-item__answer">
+              <p>{{ faq.answer }}</p>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA Banner ===== -->
+<section class="cta-banner">
+  <div class="container-max">
+    <div>
+      <h2 class="cta-banner__headline">Not sure which plan is right for you?</h2>
+      <p class="cta-banner__body">Talk to our team. We'll help you find the right fit for your team size and goals.</p>
+    </div>
+    <div class="cta-banner__actions">
+      <a routerLink="/register" class="btn-white">Start free</a>
+      <a routerLink="/contact" class="btn-ghost-white">Talk to sales</a>
+    </div>
+  </div>
+</section>

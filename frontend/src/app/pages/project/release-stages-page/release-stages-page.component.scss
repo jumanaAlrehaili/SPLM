@@ -1,0 +1,486 @@
+.stages-page {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+// ── Page header ──────────────────────────────────────────────────────────────
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 24px 28px;
+
+  &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--p-text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    i { color: var(--p-primary-color); }
+  }
+
+  &__subtitle {
+    font-size: 0.875rem;
+    color: var(--p-text-secondary-color);
+    margin: 0;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--p-text-secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// ── Loading / empty ───────────────────────────────────────────────────────────
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 64px 0;
+  color: var(--p-text-secondary-color);
+
+  i { font-size: 2rem; color: var(--p-primary-color); }
+  span { font-size: 0.875rem; }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 32px;
+  text-align: center;
+
+  &__icon {
+    font-size: 3rem;
+    color: var(--p-primary-color);
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    margin: 0 0 8px;
+  }
+
+  &__body {
+    font-size: 0.875rem;
+    color: var(--p-text-secondary-color);
+    margin: 0;
+    max-width: 320px;
+  }
+}
+
+// ── Release viewer (single-release mode) ─────────────────────────────────────
+.release-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// ── Release tab strip ─────────────────────────────────────────────────────────
+.release-tabs-bar {
+  display: flex;
+  align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
+
+  &__nav {
+    flex-shrink: 0;
+    width: 44px;
+    background: var(--p-content-background, #fff);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--p-text-color);
+    transition: background 0.1s;
+
+    &:hover:not(:disabled) {
+      background: var(--p-surface-hover, #f8f8f8);
+    }
+
+    &:disabled {
+      color: var(--p-text-secondary-color, #94a3b8);
+      cursor: default;
+    }
+
+    i { font-size: 0.9rem; }
+  }
+}
+
+.release-tabs {
+  flex: 1;
+  display: flex;
+  overflow-x: auto;
+  border-left: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-right: 1px solid var(--p-content-border-color, #e2e8f0);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.release-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--p-content-background, #fff);
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.1s, border-color 0.1s;
+  font-family: inherit;
+
+  &:hover:not(.release-tab--active) {
+    background: var(--p-surface-hover, #f4f4f4);
+  }
+
+  &--active {
+    border-bottom-color: var(--p-primary-color, #0ea5e9);
+    background: var(--p-content-background, #fff);
+  }
+
+  &__name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--p-text-color);
+  }
+
+  ::ng-deep .release-tab__status.p-tag {
+    font-size: 0.65rem !important;
+    padding: 2px 6px !important;
+  }
+}
+
+// ── Release counter ───────────────────────────────────────────────────────────
+.release-counter {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--p-text-secondary-color, #64748b);
+  letter-spacing: 0.04em;
+}
+
+// ── Release row ───────────────────────────────────────────────────────────────
+.release-row {
+  overflow: hidden;  /* clip so the pipeline scroll stays inside the card */
+  min-width: 0;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px 24px 12px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--p-primary-color);
+  }
+
+  &__name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+    margin: 0;
+  }
+
+  &__desc {
+    font-size: 0.8rem;
+    color: var(--p-text-secondary-color);
+    margin: 0;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__progress-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--p-text-secondary-color);
+    white-space: nowrap;
+  }
+}
+
+// Progress bar under the header
+.release-progress-bar {
+  height: 3px;
+  background: var(--p-content-border-color, #e2e8f0);
+
+  &__fill {
+    height: 100%;
+    background: var(--p-content-border-color, #e2e8f0);
+    transition: width 0.4s ease;
+
+    &.fill--active   { background: var(--p-primary-color, #0ea5e9); }
+    &.fill--complete { background: var(--p-green-500, #22c55e); }
+  }
+}
+
+.no-stages-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px 20px;
+  font-size: 0.8125rem;
+  color: var(--p-text-secondary-color);
+
+  i { color: var(--p-primary-color); }
+}
+
+// ── Stage pipeline (horizontal scroll) ───────────────────────────────────────
+.stage-pipeline {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 24px 24px;
+  overflow-x: auto;
+  gap: 0;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,.12) transparent;
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 2px; }
+}
+
+.stage-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+// ── Stage chip ────────────────────────────────────────────────────────────────
+.stage-chip {
+  width: 160px;
+  padding: 14px 12px 12px;
+  border: 2px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: 10px;
+  background: var(--p-content-background, #fff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  &__seq {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--p-content-border-color, #e2e8f0);
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--p-text-secondary-color);
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    font-size: 1.25rem;
+  }
+
+  &__name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--p-text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 136px;
+  }
+
+  &__dates {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    color: var(--p-text-secondary-color);
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__date-sep {
+    opacity: 0.5;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 4px;
+    width: 100%;
+    flex-wrap: wrap;
+
+    ::ng-deep .stage-btn {
+      font-size: 0.72rem !important;
+      padding: 4px 8px !important;
+    }
+
+    ::ng-deep .stage-btn--move {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  &__locked {
+    color: var(--p-text-secondary-color);
+    font-size: 0.8rem;
+    cursor: default;
+  }
+
+  // ── Status variants ──
+  &--not-started {
+    border-color: var(--p-content-border-color, #e2e8f0);
+
+    .stage-chip__icon  { color: var(--p-text-secondary-color, #94a3b8); }
+  }
+
+  &--in-progress {
+    border-color: var(--p-primary-color, #0ea5e9);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.12);
+    background: rgba(14, 165, 233, 0.03);
+
+    .stage-chip__icon  { color: var(--p-primary-color, #0ea5e9); }
+    .stage-chip__name  { color: var(--p-primary-color, #0ea5e9); }
+    .stage-chip__seq   { background: var(--p-primary-color, #0ea5e9); color: #fff; }
+  }
+
+  &--completed {
+    border-color: var(--p-green-500, #22c55e);
+    background: rgba(34, 197, 94, 0.04);
+
+    .stage-chip__icon  { color: var(--p-green-500, #22c55e); }
+    .stage-chip__name  { color: var(--p-green-600, #16a34a); }
+    .stage-chip__seq   { background: var(--p-green-500, #22c55e); color: #fff; }
+  }
+}
+
+// ── Connector arrow ───────────────────────────────────────────────────────────
+.stage-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  flex-shrink: 0;
+  padding-bottom: 40px; // align with chip center visually
+
+  i { font-size: 0.85rem; color: var(--p-content-border-color, #cbd5e1); }
+}
+
+// ── Stage chip extras ─────────────────────────────────────────────────────────
+.stage-chip__working-days {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--p-primary-color, #0ea5e9);
+
+  i { font-size: 0.7rem; }
+}
+
+.stage-chip__unscheduled {
+  font-style: italic;
+  color: var(--p-text-secondary-color, #94a3b8);
+}
+
+// ── Add stage panel ───────────────────────────────────────────────────────────
+.add-stage-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px dashed var(--p-content-border-color, #cbd5e1);
+  border-radius: 10px;
+  background: var(--p-surface-50, #f8fafc);
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--p-text-color);
+
+    i { color: var(--p-primary-color, #0ea5e9); }
+  }
+
+  &__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__days {
+    width: 9rem;
+  }
+
+  &__hint {
+    font-size: 0.72rem;
+    color: var(--p-text-secondary-color, #94a3b8);
+  }
+}
+
+.text-danger { color: var(--p-red-500, #ef4444); }

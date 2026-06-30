@@ -1,0 +1,332 @@
+<p-toast></p-toast>
+
+<div class="projects-container">
+  <!-- Header -->
+  <div class="projects-header">
+    <div>
+      <h2 class="m-0">Projects</h2>
+      <p class="mt-1 mb-0 text-secondary">Manage and track all project requests</p>
+    </div>
+    <p-button *ngIf="isPM()" label="New Project" icon="pi pi-plus" (onClick)="openCreateDialog()"></p-button>
+  </div>
+
+  <!-- Tabs + Search -->
+  <div class="projects-toolbar">
+    <p-tabs [(value)]="activeTab">
+      <p-tablist>
+        <p-tab value="0">
+          <i class="pi pi-list mr-2"></i>All Projects
+          <p-tag [value]="'' + allTotalRecords" [rounded]="true" severity="secondary" class="ml-2"></p-tag>
+        </p-tab>
+        <p-tab value="1">
+          <i class="pi pi-user mr-2"></i>My Projects
+          <p-tag [value]="'' + myTotalRecords" [rounded]="true" severity="secondary" class="ml-2"></p-tag>
+        </p-tab>
+        <p-tab value="2">
+          <i class="pi pi-envelope mr-2"></i>Project Join Requests
+          <p-tag 
+            [value]="'' + (isPM() ? (pendingRequests().length + myJoinRequests().length) : myJoinRequests().length)" 
+            [rounded]="true" 
+            [severity]="(isPM() && pendingRequests().length > 0) ? 'danger' : 'secondary'" 
+            class="ml-2">
+          </p-tag>
+        </p-tab>
+      </p-tablist>
+    </p-tabs>
+
+    <!-- All Projects: search toggle -->
+    @if (activeTab === '0') {
+      <div class="flex align-items-center gap-2 flex-wrap justify-content-end">
+        <p-button
+          [icon]="showSearch ? 'pi pi-times' : 'pi pi-search'"
+          [rounded]="true"
+          [text]="true"
+          [pTooltip]="showSearch ? 'Close search' : 'Search projects'"
+          tooltipPosition="bottom"
+          (onClick)="toggleSearch()"
+        ></p-button>
+        @if (showSearch) {
+          <p-iconfield>
+            <p-inputicon class="pi pi-search"></p-inputicon>
+            <input type="text" pInputText placeholder="Search by name..." [(ngModel)]="searchText" />
+          </p-iconfield>
+          <p-datepicker [(ngModel)]="searchCreatedFrom" placeholder="From date" appendTo="body" [showIcon]="true" [showClear]="true"></p-datepicker>
+          <p-datepicker [(ngModel)]="searchCreatedTo" placeholder="To date" appendTo="body" [showIcon]="true" [showClear]="true"></p-datepicker>
+          <p-button label="Search" icon="pi pi-search" (onClick)="search()"></p-button>
+          @if (isSearchMode) {
+            <p-button label="Clear" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="clearSearch()"></p-button>
+          }
+        }
+      </div>
+    }
+
+  </div>
+
+  <!-- Projects Table (All / My Projects) -->
+  <div class="projects-table-wrapper" *ngIf="activeTab !== '2'">
+    <p-table
+      [value]="activeTab === '0' ? allProjects() : myProjects()"
+      [paginator]="true"
+      [rows]="activeTab === '0' ? allPageSize : myPageSize"
+      [rowHover]="true"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} projects"
+      [lazy]="true"
+      [totalRecords]="activeTab === '0' ? displayedAllTotalRecords : myTotalRecords"
+      (onLazyLoad)="activeTab === '0' ? onAllProjectsPageChange($event) : onMyProjectsPageChange($event)"
+      styleClass="p-datatable-striped"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="id" style="width: 5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+          <th>Description</th>
+          <th pSortableColumn="budget" style="width: 8rem">Budget <p-sortIcon field="budget"></p-sortIcon></th>
+          <th pSortableColumn="duration" style="width: 10rem">Duration <p-sortIcon field="duration"></p-sortIcon></th>
+          <th pSortableColumn="resourcesCount" style="width: 8rem">Resources <p-sortIcon field="resourcesCount"></p-sortIcon></th>
+          <th pSortableColumn="createdAt">Created At <p-sortIcon field="createdAt"></p-sortIcon></th>
+          <th style="width: 10rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-project>
+        <tr>
+          <td>{{ project.id }}</td>
+          <td>
+            <span class="font-semibold">{{ project.name }}</span>
+          </td>
+          <td class="description-cell">{{ project.description }}</td>
+          <td>{{ project.budget !== null && project.budget !== undefined ? (project.budget | currency:'USD':'symbol':'1.0-2') : '—' }}</td>
+          <td>{{ getDurationText(project.duration, project.durationUnit) }}</td>
+          <td>{{ project.resourcesCount ?? 0 }}</td>
+          <td>{{ project.createdAt | date:'mediumDate' }}</td>
+          <td>
+            <div class="flex gap-1">
+              <p-button icon="pi pi-eye" [rounded]="true" [text]="true" pTooltip="View Details" tooltipPosition="left" (onClick)="viewProject(project)"></p-button>
+              <p-button
+                *ngIf="isAllProjectsTab && (project.membershipStatusId == null || project.membershipStatusId <= 1)"
+                icon="pi pi-sign-in"
+                [rounded]="true"
+                [text]="true"
+                severity="info"
+                pTooltip="Request to Join"
+                tooltipPosition="left"
+                (click)="openJoinDialog(project)">
+              </p-button>  
+             <p-button *ngIf="isPM()" icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" pTooltip="Delete" tooltipPosition="left" (onClick)="deleteProject(project)"></p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="8" class="text-center p-5">
+            <i class="pi pi-inbox text-4xl mb-3" style="display:block; opacity:0.3"></i>
+            <span class="text-secondary">No projects found</span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Project Join Requests (activeTab === '2') -->
+  <div class="flex flex-column gap-4" *ngIf="activeTab === '2'">
+    
+    <!-- Pending Requests Table (PM Only) -->
+    <div *ngIf="isPM()">
+      <div class="flex align-items-center justify-content-between mb-2 px-1">
+        <h4 class="m-0 text-900 font-semibold"><i class="pi pi-inbox mr-2 text-primary"></i>Pending Requests to Approve</h4>
+        <p-tag [value]="'' + pendingRequests().length" severity="danger" *ngIf="pendingRequests().length > 0"></p-tag>
+      </div>
+      <div class="projects-table-wrapper">
+        <p-table
+          [value]="pendingRequests()"
+          [paginator]="true"
+          [rows]="8"
+          [rowHover]="true"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} requests"
+          styleClass="p-datatable-striped"
+        >
+          <ng-template #header>
+            <tr>
+              <th pSortableColumn="id" style="width: 5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+              <th pSortableColumn="userName">Requester <p-sortIcon field="userName"></p-sortIcon></th>
+              <th pSortableColumn="projectName">Project <p-sortIcon field="projectName"></p-sortIcon></th>
+              <th>Reason</th>
+              <th pSortableColumn="requestedAt">Requested At <p-sortIcon field="requestedAt"></p-sortIcon></th>
+              <th style="width: 10rem">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-request>
+            <tr>
+              <td>{{ request.id }}</td>
+              <td>
+                <div class="requester-cell">
+                  <i class="pi pi-user"></i>
+                  <span class="font-semibold">{{ request.userName }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="font-semibold">{{ request.projectName }}</span>
+              </td>
+              <td class="description-cell">{{ request.joinReason || '—' }}</td>
+              <td>{{ request.requestedAt | date:'mediumDate' }}</td>
+              <td>
+                <div class="action-buttons">
+                  <p-button
+                    icon="pi pi-check"
+                    [rounded]="true"
+                    severity="success"
+                    size="small"
+                    pTooltip="Approve"
+                    tooltipPosition="left"
+                    (onClick)="approveRequest(request)"
+                  ></p-button>
+                  <p-button
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    severity="danger"
+                    size="small"
+                    pTooltip="Reject"
+                    tooltipPosition="left"
+                    (onClick)="rejectRequest(request)"
+                  ></p-button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="6" class="text-center p-5">
+                <i class="pi pi-check-circle text-4xl mb-3" style="display:block; opacity:0.3; color: var(--p-green-400)"></i>
+                <span class="text-secondary">No pending requests — all caught up!</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- My Join Requests Table (All Users) -->
+    <div>
+      <div class="flex align-items-center justify-content-between mb-2 px-1">
+        <h4 class="m-0 text-900 font-semibold"><i class="pi pi-send mr-2 text-primary"></i>My Sent Join Requests</h4>
+        <p-tag [value]="'' + myJoinRequests().length" severity="secondary" *ngIf="myJoinRequests().length > 0"></p-tag>
+      </div>
+      <div class="projects-table-wrapper">
+        <p-table
+          [value]="myJoinRequests()"
+          [paginator]="true"
+          [rows]="8"
+          [rowHover]="true"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} requests"
+          styleClass="p-datatable-striped"
+        >
+          <ng-template #header>
+            <tr>
+              <th pSortableColumn="id" style="width: 5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+              <th pSortableColumn="projectName">Project <p-sortIcon field="projectName"></p-sortIcon></th>
+              <th pSortableColumn="roleName">Role <p-sortIcon field="roleName"></p-sortIcon></th>
+              <th>Reason</th>
+              <th pSortableColumn="requestedAt">Requested At <p-sortIcon field="requestedAt"></p-sortIcon></th>
+              <th pSortableColumn="status" style="width: 8rem">Status <p-sortIcon field="status"></p-sortIcon></th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-req>
+            <tr>
+              <td>{{ req.id }}</td>
+              <td><span class="font-semibold">{{ req.projectName }}</span></td>
+              <td>{{ req.roleName || '—' }}</td>
+              <td class="description-cell">{{ req.joinReason || '—' }}</td>
+              <td>{{ req.requestedAt | date:'mediumDate' }}</td>
+              <td>
+                <p-tag
+                  [value]="req.status"
+                  [severity]="req.status === 'Approved' ? 'success' : req.status === 'Rejected' ? 'danger' : 'warn'"
+                ></p-tag>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="6" class="text-center p-5">
+                <i class="pi pi-send text-4xl mb-3" style="display:block; opacity:0.3"></i>
+                <span class="text-secondary">You haven't submitted any join requests yet</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Create Project Dialog -->
+<p-dialog
+  header="Create New Project"
+  [(visible)]="showCreateDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [draggable]="false"
+>
+  <div class="flex flex-column gap-4 pt-2">
+    <div class="flex flex-column gap-2">
+      <label for="projectName" class="font-semibold">Project Name</label>
+      <input id="projectName" type="text" pInputText [(ngModel)]="newProject.name" placeholder="Enter project name" />
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="projectDesc" class="font-semibold">Description</label>
+      <textarea id="projectDesc" pTextarea [(ngModel)]="newProject.description" rows="4" placeholder="Describe the project..." class="w-full"></textarea>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="projectBudget" class="font-semibold">Budget</label>
+      <p-inputnumber id="projectBudget" [(ngModel)]="newProject.budget" placeholder="Enter budget" mode="decimal" [minFractionDigits]="0" [maxFractionDigits]="2" [min]="0" styleClass="w-full"></p-inputnumber>
+    </div>
+
+    <div class="grid">
+      <div class="col-6 flex flex-column gap-2 pr-2">
+        <label for="projectDuration" class="font-semibold">Duration</label>
+        <p-inputnumber id="projectDuration" [(ngModel)]="newProject.duration" placeholder="e.g. 3" [min]="1" [maxFractionDigits]="0" styleClass="w-full"></p-inputnumber>
+      </div>
+      <div class="col-6 flex flex-column gap-2 pl-2">
+        <label for="projectDurationUnit" class="font-semibold">Duration Unit</label>
+        <p-select id="projectDurationUnit" [options]="durationUnitOptions" [(ngModel)]="newProject.durationUnit" optionLabel="label" optionValue="value" placeholder="Select unit" appendTo="body" styleClass="w-full"></p-select>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="showCreateDialog = false"></p-button>
+    <p-button label="Create Project" icon="pi pi-check" (onClick)="createProject()" [disabled]="!newProject.name"></p-button>
+  </ng-template>
+</p-dialog>
+
+<!-- Join Project Dialog -->
+<p-dialog
+  header="Request to Join Project"
+  [(visible)]="showJoinDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [draggable]="false"
+>
+  <div class="flex flex-column gap-4 pt-2">
+    <div class="join-project-info">
+      <i class="pi pi-folder"></i>
+      <span class="font-semibold text-lg">{{ joinProjectName }}</span>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="joinReason" class="font-semibold">Why do you want to join? <span class="text-danger">*</span></label>
+      <textarea id="joinReason" pTextarea [(ngModel)]="joinReason" rows="4" placeholder="Briefly explain your interest in this project..." class="w-full"></textarea>
+    </div>
+  </div>
+
+  <ng-template #footer>
+    <p-button label="Cancel" [text]="true" severity="secondary" (onClick)="showJoinDialog = false"></p-button>
+    <p-button label="Submit Request" icon="pi pi-send" (onClick)="submitJoinRequest()" [loading]="joinLoading()" [disabled]="!joinReason.trim()"></p-button>
+  </ng-template>
+</p-dialog>

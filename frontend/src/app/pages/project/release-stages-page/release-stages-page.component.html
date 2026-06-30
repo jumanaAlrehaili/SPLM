@@ -1,0 +1,343 @@
+<p-toast></p-toast>
+
+<div class="stages-page">
+
+  <!-- ===== Page Header ===== -->
+  <div class="page-header surface-card border-round-xl shadow-1 mb-4">
+    <div class="page-header__left">
+      <h1 class="page-header__title">
+        <i class="pi pi-sitemap"></i>
+        Release Stages
+      </h1>
+      <p class="page-header__subtitle">
+        Track and advance stage progress across all releases in your project.
+      </p>
+    </div>
+
+    <!-- Controls -->
+    <div class="page-header__controls">
+      <div class="control-group" *ngIf="projectOptions.length > 0">
+        <label class="control-label">Project</label>
+        <p-select
+          [options]="projectOptions"
+          [ngModel]="selectedProjectId()"
+          (ngModelChange)="onProjectChange($event)"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select project..."
+          styleClass="w-14rem"
+          appendTo="body"
+        ></p-select>
+      </div>
+
+      <div class="control-group" *ngIf="planOptions.length > 0">
+        <label class="control-label">Release plan</label>
+        <p-select
+          [options]="planOptions"
+          [ngModel]="selectedPlanId()"
+          (ngModelChange)="onPlanChange($event)"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Select plan..."
+          styleClass="w-14rem"
+          appendTo="body"
+        ></p-select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Loading ===== -->
+  <div *ngIf="loadingProjects() || loadingPlans() || loadingStages()" class="loading-state">
+    <i class="pi pi-spin pi-spinner"></i>
+    <span>Loading stages...</span>
+  </div>
+
+  <!-- ===== No projects ===== -->
+  <div *ngIf="!loadingProjects() && projects().length === 0" class="empty-state surface-card border-round-xl shadow-1">
+    <i class="pi pi-folder-open empty-state__icon"></i>
+    <h3 class="empty-state__title">No Projects Found</h3>
+    <p class="empty-state__body">You are not assigned to any projects with membership privileges.</p>
+  </div>
+
+  <!-- ===== No plans ===== -->
+  <div *ngIf="!loadingPlans() && selectedProjectId() && releasePlans().length === 0" class="empty-state surface-card border-round-xl shadow-1">
+    <i class="pi pi-calendar-plus empty-state__icon"></i>
+    <h3 class="empty-state__title">No Release Plans</h3>
+    <p class="empty-state__body">This project has no release plans yet. Create one in Release Planning.</p>
+  </div>
+
+  <!-- ===== No releases ===== -->
+  <div *ngIf="!loadingStages() && selectedPlanId() && releases().length === 0 && releasePlans().length > 0" class="empty-state surface-card border-round-xl shadow-1">
+    <i class="pi pi-calendar empty-state__icon"></i>
+    <h3 class="empty-state__title">No Releases</h3>
+    <p class="empty-state__body">The selected plan has no releases defined yet.</p>
+  </div>
+
+  <!-- ===== Release viewer ===== -->
+  <div *ngIf="!loadingStages() && releases().length > 0" class="release-viewer">
+
+    <!-- Release tab strip + prev/next -->
+    <div class="release-tabs-bar surface-card shadow-1">
+      <button
+        class="release-tabs-bar__nav"
+        (click)="prevRelease()"
+        [disabled]="selectedReleaseIndex() === 0"
+        pTooltip="Previous release"
+        tooltipPosition="top"
+      >
+        <i class="pi pi-chevron-left"></i>
+      </button>
+
+      <div class="release-tabs">
+        <button
+          *ngFor="let release of releases(); let i = index"
+          class="release-tab"
+          [class.release-tab--active]="selectedReleaseIndex() === i"
+          (click)="selectRelease(i)"
+        >
+          <span class="release-tab__name">{{ release.name }}</span>
+          <p-tag
+            [value]="getReleaseOverallStatus(getStagesForRelease(release.id))"
+            [severity]="getReleaseOverallSeverity(getStagesForRelease(release.id))"
+            styleClass="release-tab__status"
+          ></p-tag>
+        </button>
+      </div>
+
+      <button
+        class="release-tabs-bar__nav"
+        (click)="nextRelease()"
+        [disabled]="selectedReleaseIndex() === releases().length - 1"
+        pTooltip="Next release"
+        tooltipPosition="top"
+      >
+        <i class="pi pi-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Single release card -->
+    <div *ngIf="currentRelease" class="release-row surface-card border-round-xl shadow-1">
+
+      <!-- Release header -->
+      <div class="release-row__header">
+        <div class="release-row__info">
+          <span class="release-row__label">Release</span>
+          <h3 class="release-row__name">{{ currentRelease.name }}</h3>
+          <p class="release-row__desc" *ngIf="currentRelease.description">{{ currentRelease.description }}</p>
+        </div>
+
+        <div class="release-row__meta">
+          <p-tag
+            [value]="getReleaseOverallStatus(getStagesForRelease(currentRelease.id))"
+            [severity]="getReleaseOverallSeverity(getStagesForRelease(currentRelease.id))"
+          ></p-tag>
+          <span class="release-row__progress-text">
+            {{ getCompletedCount(getStagesForRelease(currentRelease.id)) }}
+            / {{ getStagesForRelease(currentRelease.id).length }} stages completed
+          </span>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="release-progress-bar">
+        <div
+          class="release-progress-bar__fill"
+          [style.width.%]="getReleaseProgressPct(getStagesForRelease(currentRelease.id))"
+          [class.fill--complete]="getReleaseOverallStatus(getStagesForRelease(currentRelease.id)) === 'Completed'"
+          [class.fill--active]="getReleaseOverallStatus(getStagesForRelease(currentRelease.id)) === 'In Progress'"
+        ></div>
+      </div>
+
+      <!-- No stages -->
+      <div *ngIf="getStagesForRelease(currentRelease.id).length === 0" class="no-stages-hint">
+        <i class="pi pi-info-circle"></i>
+        <span>No stages configured for this release.</span>
+      </div>
+
+      <!-- Stage pipeline -->
+      <div *ngIf="getStagesForRelease(currentRelease.id).length > 0" class="stage-pipeline">
+        <div
+          *ngFor="let stage of getStagesForRelease(currentRelease.id); let i = index; let last = last"
+          class="stage-wrapper"
+        >
+          <div
+            class="stage-chip"
+            [class.stage-chip--not-started]="getStageStatusString(stage) === 'Not Started'"
+            [class.stage-chip--in-progress]="getStageStatusString(stage) === 'In Progress'"
+            [class.stage-chip--completed]="getStageStatusString(stage) === 'Completed'"
+          >
+            <div class="stage-chip__top">
+              <span class="stage-chip__seq">{{ stage.sequence }}</span>
+              <i
+                class="stage-chip__icon pi"
+                [class.pi-circle]="getStageStatusString(stage) === 'Not Started'"
+                [class.pi-spin]="getStageStatusString(stage) === 'In Progress'"
+                [class.pi-spinner]="getStageStatusString(stage) === 'In Progress'"
+                [class.pi-check-circle]="getStageStatusString(stage) === 'Completed'"
+              ></i>
+            </div>
+
+            <span class="stage-chip__name" [title]="getStageName(stage)">{{ getStageName(stage) }}</span>
+
+            <span class="stage-chip__working-days">
+              <i class="pi pi-clock"></i> {{ stage.workingDays }} working {{ stage.workingDays === 1 ? 'day' : 'days' }}
+            </span>
+
+            <div class="stage-chip__dates">
+              <ng-container *ngIf="stage.startDate; else notScheduled">
+                <span>{{ formatDate(stage.startDate) }}</span>
+                <span class="stage-chip__date-sep">→</span>
+                <span>{{ formatDate(stage.endDate) }}</span>
+              </ng-container>
+              <ng-template #notScheduled>
+                <span class="stage-chip__unscheduled">Not scheduled</span>
+              </ng-template>
+            </div>
+
+            <p-tag
+              [value]="getStageStatusString(stage)"
+              [severity]="getStageStatusSeverity(stage)"
+              styleClass="text-xs"
+            ></p-tag>
+
+            <div class="stage-chip__actions" *ngIf="canManageStage(stage)">
+              <p-button
+                icon="pi pi-pencil"
+                [text]="true"
+                size="small"
+                severity="secondary"
+                styleClass="stage-btn"
+                pTooltip="Edit stage"
+                tooltipPosition="top"
+                (onClick)="openEditStageDialog(stage, currentRelease)"
+              ></p-button>
+
+              <p-button
+                *ngIf="canMoveStage(stage, i, getStagesForRelease(currentRelease.id))"
+                [icon]="getStageStatusString(stage) === 'Not Started' ? 'pi pi-play' : 'pi pi-check'"
+                [label]="getMoveButtonLabel(stage)"
+                size="small"
+                [severity]="getStageStatusString(stage) === 'Not Started' ? 'info' : 'success'"
+                styleClass="stage-btn stage-btn--move"
+                [loading]="stageMoving() === stage.id"
+                (onClick)="moveStage(stage, currentRelease)"
+              ></p-button>
+
+              <span
+                *ngIf="!canMoveStage(stage, i, getStagesForRelease(currentRelease.id)) && getStageStatusString(stage) !== 'Completed'"
+                class="stage-chip__locked"
+                pTooltip="Previous stage must be completed first"
+                tooltipPosition="top"
+              >
+                <i class="pi pi-lock"></i>
+              </span>
+            </div>
+          </div>
+
+          <div *ngIf="!last" class="stage-connector">
+            <i class="pi pi-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Stage (PM only) -->
+      <div *ngIf="isPM()" class="add-stage-panel">
+        <span class="add-stage-panel__title"><i class="pi pi-plus-circle"></i> Add a stage</span>
+        <div class="add-stage-panel__form">
+          <p-select
+            [options]="getAddStageOptions(currentRelease)"
+            [(ngModel)]="addStageId"
+            optionLabel="label"
+            optionValue="value"
+            optionDisabled="disabled"
+            placeholder="Select stage..."
+            styleClass="w-14rem"
+            appendTo="body"
+          ></p-select>
+          <input
+            type="number"
+            min="1"
+            pInputText
+            [(ngModel)]="addStageWorkingDays"
+            placeholder="Working days"
+            class="add-stage-panel__days"
+          />
+          <p-button
+            label="Add Stage"
+            icon="pi pi-plus"
+            [loading]="stageCreating()"
+            (onClick)="createStage(currentRelease)"
+          ></p-button>
+        </div>
+        <span class="add-stage-panel__hint">
+          Stages are added in workflow order; the same stage can't be added twice.
+        </span>
+      </div>
+
+    </div>
+
+    <!-- Release counter -->
+    <div class="release-counter">
+      {{ selectedReleaseIndex() + 1 }} of {{ releases().length }} releases
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ======================================================= -->
+<!-- DIALOG: Edit Stage -->
+<!-- ======================================================= -->
+<p-dialog
+  header="Edit Stage"
+  [(visible)]="displayEditStageDialog"
+  [modal]="true"
+  [style]="{ width: '440px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-column gap-4 mt-2" *ngIf="selectedStageForEdit()">
+
+    <div class="flex flex-column gap-1">
+      <span class="text-xs text-secondary font-semibold uppercase">System stage</span>
+      <span class="text-900 font-bold text-sm">{{ getStageName(selectedStageForEdit()) }}</span>
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <label for="edit-stage-name" class="font-bold text-sm text-900">
+        Custom name
+        <span class="text-secondary text-xs font-normal ml-2">(optional)</span>
+      </label>
+      <input
+        id="edit-stage-name"
+        type="text"
+        pInputText
+        placeholder="e.g. Internal QA Review"
+        [(ngModel)]="stageEditName"
+        class="w-full"
+        maxlength="100"
+      />
+    </div>
+
+    <div class="flex flex-column gap-1">
+      <label for="edit-stage-working-days" class="font-bold text-sm text-900">Working days <span class="text-danger">*</span></label>
+      <input id="edit-stage-working-days" type="number" min="0" pInputText
+        [(ngModel)]="stageEditWorkingDays" class="w-full" placeholder="e.g. 5" />
+    </div>
+
+    <div class="flex align-items-center gap-2 p-2 border-round-lg bg-surface-100 border-1 surface-border">
+      <i class="pi pi-info-circle text-primary text-sm"></i>
+      <span class="text-secondary text-xs line-height-3">
+        Changes are logged in the stage history and require Project Manager or Stage Lead permissions.
+      </span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="displayEditStageDialog.set(false)" [disabled]="stageSaving()"></p-button>
+      <p-button label="Save changes" severity="primary" icon="pi pi-check" (onClick)="saveStageEdit()" [loading]="stageSaving()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

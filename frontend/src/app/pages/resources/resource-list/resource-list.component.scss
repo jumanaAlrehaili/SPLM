@@ -1,0 +1,242 @@
+// ===== Filter Console =====
+.filter-console {
+  margin-bottom: 20px;
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: 14px;
+  background: var(--p-content-background, #fff);
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+
+  &:focus-within {
+    border-color: var(--p-primary-color, #0ea5e9);
+    box-shadow: 0 0 0 4px rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.12);
+  }
+
+  &--active {
+    border-color: var(--p-primary-color, #0ea5e9);
+  }
+
+  // ── The bar ──
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px 8px 16px;
+    min-height: 56px;
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+    color: var(--p-text-secondary-color, #94a3b8);
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--p-text-color, #1e293b);
+    font-family: inherit;
+
+    &::placeholder { color: var(--p-text-secondary-color, #94a3b8); }
+  }
+
+  &__clear-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: var(--p-surface-100, #f1f5f9);
+    color: var(--p-text-secondary-color, #64748b);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s;
+
+    &:hover { background: var(--p-surface-200, #e2e8f0); }
+    i { font-size: 0.7rem; }
+  }
+
+  &__divider {
+    width: 1px;
+    height: 28px;
+    background: var(--p-content-border-color, #e2e8f0);
+    flex-shrink: 0;
+  }
+
+  &__pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__count {
+    flex-shrink: 0;
+    min-width: 74px;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--p-text-secondary-color, #64748b);
+
+    strong { color: var(--p-text-color, #1e293b); }
+    i { color: var(--p-primary-color, #0ea5e9); }
+  }
+
+  // ── Active filter chips row ──
+  &__chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 16px 14px;
+  }
+
+  &__clear-all {
+    margin-left: 4px;
+    background: none;
+    border: none;
+    padding: 4px 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--p-primary-color, #0ea5e9);
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+// ── Chip-styled filter dropdowns ──
+:host ::ng-deep .filter-pill.p-select {
+  border-radius: 999px;
+  background: var(--p-surface-100, #f1f5f9);
+  border: 1px solid transparent;
+  min-width: 7.5rem;
+
+  .p-select-label {
+    padding: 7px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--p-text-color, #334155);
+  }
+
+  .p-select-dropdown { width: 1.8rem; }
+
+  &:not(.p-disabled):hover {
+    border-color: var(--p-primary-color, #0ea5e9);
+  }
+}
+
+:host ::ng-deep .filter-pill.p-multiselect {
+  border-radius: 999px;
+  background: var(--p-surface-100, #f1f5f9);
+  border: 1px solid transparent;
+  min-width: 7.5rem;
+
+  .p-multiselect-label {
+    padding: 7px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--p-text-color, #334155);
+  }
+
+  .p-multiselect-label.p-placeholder {
+    color: var(--p-text-color, #334155);
+  }
+
+  .p-multiselect-dropdown { width: 1.8rem; }
+
+  &:not(.p-disabled):hover {
+    border-color: var(--p-primary-color, #0ea5e9);
+  }
+
+  // Highlight the pill when one or more roles are selected.
+  &:has(.p-multiselect-label:not(.p-placeholder)) {
+    background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.12);
+    border-color: var(--p-primary-color, #0ea5e9);
+
+    .p-multiselect-label { color: var(--p-primary-color, #0284c7); }
+  }
+}
+
+// ── Active filter chips ──
+.fchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.10);
+  border: 1px solid rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.25);
+  overflow: hidden;
+  font-size: 0.76rem;
+
+  &__key {
+    padding: 0 8px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.18);
+    color: var(--p-primary-color, #0284c7);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.66rem;
+  }
+
+  &__val {
+    padding: 0 8px;
+    color: var(--p-text-color, #1e293b);
+    font-weight: 600;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__x {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: var(--p-primary-color, #0284c7);
+    cursor: pointer;
+
+    &:hover { background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.18); }
+    i { font-size: 0.6rem; }
+  }
+}
+
+// ===== Empty state =====
+.resource-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 16px;
+  color: var(--p-text-secondary-color, #94a3b8);
+
+  &__icon {
+    font-size: 2rem;
+    color: var(--p-primary-color, #0ea5e9);
+  }
+}
+
+// ── Responsive ──
+@media (max-width: 768px) {
+  .filter-console__bar {
+    flex-wrap: wrap;
+  }
+  .filter-console__divider { display: none; }
+  .filter-console__count {
+    flex-basis: 100%;
+    text-align: left;
+  }
+}

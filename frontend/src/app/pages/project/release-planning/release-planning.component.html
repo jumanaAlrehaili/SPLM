@@ -1,0 +1,540 @@
+<p-toast></p-toast>
+
+<div class="release-planning-container mt-4">
+  <!-- Loading state -->
+  <div *ngIf="loading() && releasePlans().length === 0" class="flex justify-content-center align-items-center py-8">
+    <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+  </div>
+
+  <!-- Empty state if no plans exist -->
+  <div *ngIf="!loading() && releasePlans().length === 0" class="empty-state text-center p-6 border-round-xl shadow-1 surface-card mb-4">
+    <i class="pi pi-calendar-plus text-6xl text-primary mb-3"></i>
+    <h3 class="text-900 font-bold m-0 mb-2">No Release Plans</h3>
+    <p class="text-secondary text-sm m-0 mb-4 max-w-20rem mx-auto">
+      Create a Release Plan to outline your roadmap, schedule releases, and coordinate features.
+    </p>
+    <p-button *ngIf="isPM()" label="Create Release Plan" icon="pi pi-plus" (onClick)="openCreatePlanDialog()"></p-button>
+  </div>
+
+  <!-- Main Workspace Layout -->
+  <div *ngIf="releasePlans().length > 0" class="surface-card border-round-xl border-1 surface-border p-4 shadow-1">
+    <div class="grid grid-nogutter gap-4">
+
+      <!-- LEFT SIDEBAR: Release Plans List -->
+      <div class="col-12 lg:col-3 flex flex-column gap-3 plan-sidebar border-right-1 surface-border pr-3">
+        <div class="flex justify-content-between align-items-center mb-2 px-2">
+          <h4 class="m-0 text-900 font-bold"><i class="pi pi-map mr-2 text-primary"></i>Roadmaps</h4>
+          <p-button
+            *ngIf="isPM()"
+            icon="pi pi-plus"
+            [rounded]="true"
+            [text]="true"
+            severity="primary"
+            pTooltip="Create Release Plan"
+            tooltipPosition="left"
+            (onClick)="openCreatePlanDialog()"
+          ></p-button>
+        </div>
+
+        <div class="flex flex-column gap-2 overflow-y-auto max-h-30rem plan-list-wrapper pr-1">
+          <div
+            *ngFor="let plan of releasePlans()"
+            [class.active]="selectedPlan()?.id === plan.id"
+            class="plan-item-card p-3 border-round-lg flex justify-content-between align-items-center transition-all transition-duration-200 cursor-pointer"
+            (click)="selectPlan(plan)"
+          >
+            <div class="flex flex-column gap-1 overflow-hidden mr-2">
+              <span class="font-bold text-900 text-sm truncate" [title]="plan.name">{{ plan.name }}</span>
+              <span class="text-secondary text-xs truncate" [title]="plan.description">{{ plan.description || 'No description' }}</span>
+            </div>
+            <div class="flex gap-1" *ngIf="isPM()">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="warn" class="p-button-sm-icon" (onClick)="openEditPlanDialog(plan, $event)"></p-button>
+              <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" class="p-button-sm-icon" (onClick)="deletePlan(plan, $event)"></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SECTION: Active Plan Details & Releases -->
+      <div class="col-12 lg:col flex-grow-1 flex flex-column gap-4 pl-3">
+
+        <!-- Selected Plan Header -->
+        <div class="flex flex-column gap-3 pb-3 border-bottom-1 surface-border transition-all" *ngIf="selectedPlan()">
+          <div class="flex justify-content-between align-items-start flex-wrap gap-3">
+            <div class="flex flex-column gap-1">
+              <h2 class="m-0 text-900 font-bold tracking-tight">{{ selectedPlan().name }}</h2>
+              <p class="m-0 text-secondary text-sm mt-1 max-w-4xl line-height-3">{{ selectedPlan().description || 'No description provided.' }}</p>
+            </div>
+            <p-button
+              *ngIf="isPM()"
+              label="Add Release"
+              icon="pi pi-plus"
+              severity="primary"
+              class="shadow-1"
+              (onClick)="openCreateReleaseDialog()"
+            ></p-button>
+          </div>
+        </div>
+
+        <!-- Releases Grid -->
+        <div *ngIf="selectedPlan()" class="releases-wrapper">
+          <div class="flex justify-content-between align-items-center mb-3">
+            <h3 class="m-0 text-900 font-bold text-lg"><i class="pi pi-calendar mr-2 text-primary"></i>Releases</h3>
+            <span class="text-secondary text-xs font-semibold uppercase tracking-wider bg-light px-2 py-1 border-round-md">
+              {{ selectedPlan().releases?.length || 0 }} releases defined
+            </span>
+          </div>
+
+          <!-- Empty releases state -->
+          <div *ngIf="!selectedPlan().releases || selectedPlan().releases.length === 0" class="empty-releases text-center p-5 border-round-xl surface-card shadow-1 border-dashed-2">
+            <i class="pi pi-folder-open text-4xl text-secondary mb-2"></i>
+            <h4 class="text-800 font-bold m-0 mb-1">No Releases Configured</h4>
+            <p class="text-secondary text-xs m-0 mb-3">Add release checkpoints to segment project goals.</p>
+            <p-button *ngIf="isPM()" label="Add Release" icon="pi pi-plus" [outlined]="true" size="small" (onClick)="openCreateReleaseDialog()"></p-button>
+          </div>
+
+          <!-- Release Cards Grid -->
+          <div class="grid" *ngIf="selectedPlan().releases && selectedPlan().releases.length > 0">
+            <div class="col-12 md:col-6 xl:col-4 p-2" *ngFor="let release of selectedPlan().releases">
+              <div class="release-card surface-card border-round-xl p-4 shadow-1 flex flex-column justify-content-between h-full border-top-3 border-primary relative transition-all transition-duration-200">
+
+                <!-- Card Header -->
+                <div class="flex flex-column gap-3 mb-4">
+                  <div class="flex justify-content-between align-items-start gap-2">
+                    <div class="flex flex-column gap-1">
+                      <span class="text-xs font-semibold tracking-wide text-primary uppercase">Release</span>
+                      <h4 class="m-0 text-900 font-bold text-lg line-height-2">{{ release.name }}</h4>
+                    </div>
+                    <div class="flex gap-1" *ngIf="isPM()">
+                      <p-button icon="pi pi-pencil" [text]="true" severity="warn" size="small" pTooltip="Edit Release" (onClick)="openEditReleaseDialog(release)"></p-button>
+                      <p-button icon="pi pi-trash" [text]="true" severity="danger" size="small" pTooltip="Delete Release" (onClick)="deleteRelease(release.id)"></p-button>
+                    </div>
+                  </div>
+
+                  <p class="m-0 text-secondary text-xs line-height-3 h-2rem overflow-y-auto">{{ release.description || 'No description provided.' }}</p>
+                </div>
+
+                <!-- Assigned Features Section -->
+                <div class="features-box border-round-lg p-3 bg-light flex flex-column gap-2 mb-3">
+                  <div class="flex justify-content-between align-items-center mb-1">
+                    <span class="text-xs font-bold text-700 uppercase tracking-wider">Features</span>
+                    <span class="text-xs font-bold text-primary bg-primary-light px-2 py-05 border-round-md">
+                      {{ getFeaturesAssignedToRelease(release).length }}
+                    </span>
+                  </div>
+
+                  <div *ngIf="getFeaturesAssignedToRelease(release).length === 0" class="text-center py-3 text-secondary text-xs italic">
+                    No features assigned
+                  </div>
+
+                  <div class="flex flex-column gap-2 max-h-12rem overflow-y-auto pr-1" *ngIf="getFeaturesAssignedToRelease(release).length > 0">
+                    <div
+                      *ngFor="let feat of getFeaturesAssignedToRelease(release)"
+                      class="feature-row-chip p-2 border-round bg-white border-1 surface-border flex justify-content-between align-items-center gap-2"
+                    >
+                      <span class="font-semibold text-900 text-xs truncate" [title]="feat.title">{{ feat.title }}</span>
+                      <div class="flex gap-1 shrink-none">
+                        <p-tag [value]="getPriorityLabel(feat.priorityId)" [severity]="getPrioritySeverity(feat.priorityId)" styleClass="text-2xs px-1 font-bold"></p-tag>
+                        <p-tag [value]="feat.status" [severity]="getStatusSeverity(feat.status)" styleClass="text-2xs px-1 font-bold"></p-tag>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card Footer Actions -->
+                <div class="card-footer flex flex-column gap-2 mt-auto">
+                  <!-- View Stages — navigates to the dedicated stages page -->
+                  <p-button
+                    label="View Stages"
+                    icon="pi pi-sitemap"
+                    severity="primary"
+                    styleClass="w-full text-sm p-button-sm py-2"
+                    (onClick)="viewStages(release)"
+                  ></p-button>
+
+                  <p-button
+                    *ngIf="isPM()"
+                    label="Manage Features"
+                    icon="pi pi-cog"
+                    [outlined]="true"
+                    severity="secondary"
+                    styleClass="w-full text-sm p-button-sm py-2"
+                    (onClick)="openFeatureAssignmentDialog(release)"
+                  ></p-button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================================= -->
+<!-- DIALOG: Release Plan Form -->
+<!-- ========================================================================= -->
+<p-dialog
+  [header]="selectedPlanForEdit() ? 'Edit Release Plan' : 'Create Release Plan'"
+  [(visible)]="displayPlanDialog"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="roadmap-form-dialog"
+>
+  <div class="flex flex-column gap-3 mt-2">
+    <div class="flex flex-column gap-1">
+      <label for="plan-name" class="font-bold text-sm text-900">Name <span class="text-danger">*</span></label>
+      <input id="plan-name" type="text" pInputText placeholder="e.g. 2025 Roadmap" [(ngModel)]="planName" class="w-full" maxlength="100" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label for="plan-desc" class="font-bold text-sm text-900">Description</label>
+      <textarea id="plan-desc" pInputText placeholder="Provide a brief roadmap overview..." [(ngModel)]="planDescription" class="w-full p-2" style="height: 100px; resize: none;" maxlength="500"></textarea>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="displayPlanDialog.set(false)" [disabled]="submitting()"></p-button>
+      <p-button label="Save" severity="primary" (onClick)="savePlan()" [loading]="submitting()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- ========================================================================= -->
+<!-- DIALOG: Release Form -->
+<!-- ========================================================================= -->
+<p-dialog
+  [header]="selectedReleaseForEdit() ? 'Edit Release' : 'Create Release'"
+  [(visible)]="displayReleaseDialog"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="roadmap-form-dialog"
+>
+  <div class="flex flex-column gap-3 mt-2">
+    <div class="flex flex-column gap-1">
+      <label for="rel-name" class="font-bold text-sm text-900">Release Version Name <span class="text-danger">*</span></label>
+      <input id="rel-name" type="text" pInputText placeholder="e.g. v1.0" [(ngModel)]="releaseName" class="w-full" maxlength="50" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <label for="rel-desc" class="font-bold text-sm text-900">Description</label>
+      <textarea id="rel-desc" pInputText placeholder="Details, focus goals, or milestone metrics..." [(ngModel)]="releaseDescription" class="w-full p-2" style="height: 100px; resize: none;" maxlength="500"></textarea>
+    </div>
+    <div class="flex align-items-center gap-2 p-2 border-round-lg bg-light border-1 surface-border" *ngIf="!selectedReleaseForEdit()">
+      <i class="pi pi-info-circle text-primary text-sm"></i>
+      <span class="text-secondary text-xs line-height-3">
+        After creating the release, add its stages one by one from the Release Stages page.
+      </span>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="displayReleaseDialog.set(false)" [disabled]="submitting()"></p-button>
+      <p-button label="Save" severity="primary" (onClick)="saveRelease()" [loading]="submitting()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- ========================================================================= -->
+<!-- DIALOG: Manage Features -->
+<!-- ========================================================================= -->
+<p-dialog
+  [header]="selectedReleaseForAssignment() ? 'Manage Features — ' + selectedReleaseForAssignment().name : 'Manage Features'"
+  [(visible)]="displayFeatureAssignmentDialog"
+  [modal]="true"
+  [style]="{ width: '600px', 'max-height': '85vh' }"
+  [breakpoints]="{ '991px': '90vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="features-assign-dialog"
+>
+  <div class="mt-2 flex flex-column gap-3">
+    <div>
+      <h4 class="m-0 text-900 font-bold mb-1">Assign Features to Release</h4>
+      <p class="text-secondary text-xs m-0">Toggle checkboxes to immediately add or remove project features to this release.</p>
+    </div>
+
+    <div *ngIf="loading() && features().length === 0" class="text-center py-4">
+      <i class="pi pi-spin pi-spinner text-3xl text-primary"></i>
+    </div>
+
+    <div *ngIf="!loading() && features().length === 0" class="text-center py-5 text-secondary text-sm">
+      <i class="pi pi-info-circle text-2xl block mb-2"></i>
+      No features available in this project to assign.
+    </div>
+
+    <div class="features-checklist-wrapper max-h-24rem overflow-y-auto border-1 surface-border border-round-lg pr-1" *ngIf="features().length > 0">
+      <div
+        *ngFor="let feat of features()"
+        class="checklist-item p-3 border-bottom-1 surface-border flex justify-content-between align-items-center gap-3 transition-all hover:bg-light"
+      >
+        <div class="flex align-items-center gap-3 overflow-hidden">
+          <input
+            type="checkbox"
+            [id]="'feat-chk-' + feat.id"
+            [checked]="isFeatureInRelease(feat, selectedReleaseForAssignment())"
+            (change)="onFeatureToggle(feat, $event)"
+            class="w-1rem h-1rem accent-primary cursor-pointer"
+          />
+          <div class="flex flex-column gap-1 overflow-hidden">
+            <label [for]="'feat-chk-' + feat.id" class="font-bold text-800 text-sm cursor-pointer truncate" [title]="feat.title">
+              {{ feat.title }}
+            </label>
+            <span class="text-secondary text-2xs truncate" *ngIf="feat.release && !isFeatureInRelease(feat, selectedReleaseForAssignment())">
+              Assigned to: <strong class="text-primary">{{ feat.release }}</strong>
+            </span>
+            <span class="text-secondary text-2xs" *ngIf="!feat.release">Not assigned</span>
+          </div>
+        </div>
+        <div class="flex gap-1 shrink-none">
+          <p-tag [value]="getPriorityLabel(feat.priorityId)" [severity]="getPrioritySeverity(feat.priorityId)" styleClass="text-3xs font-bold"></p-tag>
+          <p-tag [value]="feat.status" [severity]="getStatusSeverity(feat.status)" styleClass="text-3xs font-bold"></p-tag>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2 pt-2">
+      <p-button label="Close" severity="primary" (onClick)="displayFeatureAssignmentDialog.set(false)"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- ========================================================================= -->
+<!-- DIALOG: Release Stages Pipeline -->
+<!-- ========================================================================= -->
+<p-dialog
+  [header]="'Release Stages — ' + (selectedReleaseForStages()?.name || '')"
+  [(visible)]="displayStagesDialog"
+  [modal]="true"
+  [style]="{ width: '860px', 'max-height': '90vh' }"
+  [breakpoints]="{ '991px': '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="stages-dialog"
+>
+  <!-- Loading -->
+  <div *ngIf="stagesLoading()" class="flex justify-content-center align-items-center py-6">
+    <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+  </div>
+
+  <!-- Empty stages -->
+  <div *ngIf="!stagesLoading() && stages().length === 0" class="text-center py-6">
+    <i class="pi pi-sitemap text-5xl text-secondary mb-3 block"></i>
+    <p class="text-secondary text-sm m-0">No stages configured for this release.</p>
+  </div>
+
+  <!-- Stages pipeline -->
+  <div *ngIf="!stagesLoading() && stages().length > 0" class="stages-pipeline-wrapper mt-2">
+
+    <!-- Info bar -->
+    <div class="stages-info-bar mb-4">
+      <i class="pi pi-info-circle text-primary mr-2"></i>
+      <span class="text-secondary text-xs">
+        Stages advance sequentially: <strong>Not Started → In Progress → Completed</strong>.
+        Each stage must be completed before the next can start.
+      </span>
+    </div>
+
+    <!-- Pipeline nodes -->
+    <div class="stages-pipeline">
+      <div
+        *ngFor="let stage of stages(); let i = index; let last = last"
+        class="stage-node-wrapper"
+      >
+        <!-- Stage card -->
+        <div
+          class="stage-node"
+          [class.stage-node--not-started]="getStageStatusString(stage) === 'Not Started'"
+          [class.stage-node--in-progress]="getStageStatusString(stage) === 'In Progress'"
+          [class.stage-node--completed]="getStageStatusString(stage) === 'Completed'"
+        >
+          <!-- Sequence badge -->
+          <div class="stage-node__seq">{{ stage.sequence || i + 1 }}</div>
+
+          <!-- Status icon -->
+          <div class="stage-node__status-icon">
+            <i
+              class="pi"
+              [class.pi-circle]="getStageStatusString(stage) === 'Not Started'"
+              [class.pi-spin]="getStageStatusString(stage) === 'In Progress'"
+              [class.pi-spinner]="getStageStatusString(stage) === 'In Progress'"
+              [class.pi-check-circle]="getStageStatusString(stage) === 'Completed'"
+            ></i>
+          </div>
+
+          <!-- Stage name -->
+          <h4 class="stage-node__name" [title]="getStageName(stage)">{{ getStageName(stage) }}</h4>
+
+          <!-- Working days + schedule -->
+          <div class="stage-node__dates">
+            <span class="stage-node__date-label">Working days</span>
+            <span class="stage-node__date-value">{{ stage.workingDays }}</span>
+            <ng-container *ngIf="stage.startDate; else stageNotScheduled">
+              <span class="stage-node__date-label">Start</span>
+              <span class="stage-node__date-value">{{ formatDate(stage.startDate) }}</span>
+              <span class="stage-node__date-label">End</span>
+              <span class="stage-node__date-value">{{ formatDate(stage.endDate) }}</span>
+            </ng-container>
+            <ng-template #stageNotScheduled>
+              <span class="stage-node__date-label">Schedule</span>
+              <span class="stage-node__date-value">Not scheduled</span>
+            </ng-template>
+          </div>
+
+          <!-- Status tag -->
+          <div class="stage-node__status-tag">
+            <p-tag
+              [value]="getStageStatusString(stage)"
+              [severity]="getStageStatusSeverity(stage)"
+              styleClass="text-xs font-bold"
+            ></p-tag>
+          </div>
+
+          <!-- Actions -->
+          <div class="stage-node__actions">
+            <!-- Edit (PM or Stage Lead only) -->
+            <p-button
+              *ngIf="canManageStage()"
+              icon="pi pi-pencil"
+              label="Edit"
+              [text]="true"
+              size="small"
+              severity="secondary"
+              styleClass="stage-action-btn"
+              pTooltip="Edit stage name and dates"
+              (onClick)="openEditStageDialog(stage)"
+            ></p-button>
+
+            <!-- Move forward (PM or Stage Lead, only if allowed) -->
+            <p-button
+              *ngIf="canManageStage() && canMoveStage(stage, i)"
+              [icon]="getStageStatusString(stage) === 'Not Started' ? 'pi pi-play' : 'pi pi-check'"
+              [label]="getMoveButtonLabel(stage)"
+              size="small"
+              [severity]="getStageStatusString(stage) === 'Not Started' ? 'info' : 'success'"
+              styleClass="stage-action-btn"
+              [loading]="stageMoving() === stage.id"
+              (onClick)="moveStage(stage)"
+            ></p-button>
+
+            <!-- Locked indicator for blocked stages -->
+            <span
+              *ngIf="canManageStage() && !canMoveStage(stage, i) && getStageStatusString(stage) !== 'Completed'"
+              class="stage-locked-hint"
+              pTooltip="Previous stage must be completed first"
+              tooltipPosition="top"
+            >
+              <i class="pi pi-lock text-secondary"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Connector arrow (between nodes, not after last) -->
+        <div *ngIf="!last" class="stage-connector">
+          <i class="pi pi-arrow-right stage-connector__icon"></i>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Overall progress bar -->
+    <div class="stages-progress-section mt-4">
+      <div class="flex justify-content-between align-items-center mb-2">
+        <span class="text-xs font-bold text-700 uppercase">Overall progress</span>
+        <span class="text-xs font-bold text-primary">
+          {{ getCompletedStageCount() }} / {{ stages().length }} stages completed
+        </span>
+      </div>
+      <div class="stages-progress-bar">
+        <div
+          class="stages-progress-bar__fill"
+          [style.width.%]="stages().length > 0 ? (getCompletedStageCount() / stages().length) * 100 : 0"
+        ></div>
+      </div>
+    </div>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end">
+      <p-button label="Close" severity="secondary" (onClick)="displayStagesDialog.set(false)"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+
+<!-- ========================================================================= -->
+<!-- DIALOG: Edit Stage -->
+<!-- ========================================================================= -->
+<p-dialog
+  header="Edit Stage"
+  [(visible)]="displayEditStageDialog"
+  [modal]="true"
+  [style]="{ width: '440px' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="edit-stage-dialog"
+>
+  <div class="flex flex-column gap-4 mt-2" *ngIf="selectedStageForEdit()">
+
+    <!-- System stage name (read-only reference) -->
+    <div class="flex flex-column gap-1">
+      <span class="text-xs text-secondary font-semibold uppercase">System stage</span>
+      <span class="text-900 font-bold text-sm">{{ getStageName(selectedStageForEdit()) }}</span>
+    </div>
+
+    <!-- Custom stage name -->
+    <div class="flex flex-column gap-1">
+      <label for="stage-custom-name" class="font-bold text-sm text-900">
+        Custom name
+        <span class="text-secondary text-xs font-normal ml-2">(optional — overrides system name)</span>
+      </label>
+      <input
+        id="stage-custom-name"
+        type="text"
+        pInputText
+        placeholder="e.g. Internal QA Review"
+        [(ngModel)]="stageEditName"
+        class="w-full"
+        maxlength="100"
+      />
+    </div>
+
+    <!-- Working days -->
+    <div class="flex flex-column gap-1">
+      <label for="stage-working-days" class="font-bold text-sm text-900">Working days <span class="text-danger">*</span></label>
+      <input
+        id="stage-working-days"
+        type="number"
+        min="0"
+        pInputText
+        [(ngModel)]="stageEditWorkingDays"
+        class="w-full"
+        placeholder="e.g. 5"
+      />
+    </div>
+
+    <div class="flex align-items-center gap-2 p-2 border-round-lg bg-light border-1 surface-border">
+      <i class="pi pi-info-circle text-primary text-sm"></i>
+      <span class="text-secondary text-xs line-height-3">
+        Changes are logged in the stage history and require Project Manager or Stage Lead permissions.
+      </span>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" [text]="true" (onClick)="displayEditStageDialog.set(false)" [disabled]="stageSaving()"></p-button>
+      <p-button label="Save changes" severity="primary" icon="pi pi-check" (onClick)="saveStageEdit()" [loading]="stageSaving()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

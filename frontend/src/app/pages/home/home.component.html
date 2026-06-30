@@ -1,0 +1,118 @@
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="container-max hero__inner">
+    <p class="eyebrow">Enterprise software Project lifecycle management</p>
+    <h1 class="hero__headline">Ship better software.<br>On time, every time.</h1>
+    <p class="hero__subhead">
+      SPLM gives Project teams a single platform to plan projects, track features,
+      and coordinate releases — from initial idea to production deployment.
+    </p>
+    <div class="hero__ctas">
+      <a routerLink="/register" class="btn-primary btn-lg">Get started free</a>
+      <a routerLink="/about" class="btn-ghost btn-lg">
+        Learn more <i class="pi pi-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Trusted by band ===== -->
+<div class="trusted-band">
+  <div class="container-max">
+    <p class="trusted-band__label">Trusted by Project teams at leading organizations</p>
+    <div class="trusted-band__logos">
+      <span class="logo-tile">Acme Corp</span>
+      <span class="logo-tile">Nexus Labs</span>
+      <span class="logo-tile">Vertex Systems</span>
+      <span class="logo-tile">BlueStar Tech</span>
+      <span class="logo-tile">Horizon Digital</span>
+      <span class="logo-tile">CoreSoft</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Platform capabilities ===== -->
+<section class="features-section">
+  <div class="container-max">
+    <div class="section-header">
+      <p class="eyebrow">Platform capabilities</p>
+      <h2 class="section-headline">Everything your Proect team needs</h2>
+      <p class="section-body">
+        SPLM consolidates the fragmented tools across your team into one coherent workflow —
+        reducing friction, improving visibility, and helping you deliver on your roadmap.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      @for (feature of features; track feature.title) {
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <i [class]="feature.icon"></i>
+          </div>
+          <h3 class="feature-card__title">{{ feature.title }}</h3>
+          <p class="feature-card__desc">{{ feature.desc }}</p>
+          <a routerLink="/register" class="feature-card__link">
+            Get started <i class="pi pi-arrow-right"></i>
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== How it works ===== -->
+<section class="how-it-works">
+  <div class="container-max">
+    <div class="section-header">
+      <p class="eyebrow">How it works</p>
+      <h2 class="section-headline">From idea to release in three steps</h2>
+    </div>
+
+    <div class="steps-row">
+      @for (step of steps; track step.number) {
+        <div class="step">
+          <span class="step__number">{{ step.number }}</span>
+          <h3 class="step__title">{{ step.title }}</h3>
+          <p class="step__desc">{{ step.desc }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== Enterprise band (dark) ===== -->
+<section class="enterprise-band">
+  <div class="container-max enterprise-band__inner">
+    <div class="enterprise-band__content">
+      <p class="eyebrow eyebrow--light">Enterprise grade</p>
+      <h2 class="enterprise-band__headline">
+        Built for teams that need more than a spreadsheet
+      </h2>
+      <p class="enterprise-band__body">
+        SPLM scales with your organization. Whether you manage five projects or fifty,
+        the platform gives you the governance, visibility, and structure to stay in control.
+      </p>
+      <a routerLink="/register" class="btn-primary btn-lg">Start for free</a>
+    </div>
+
+    <ul class="enterprise-band__list">
+      @for (feat of enterpriseFeatures; track feat) {
+        <li><i class="pi pi-check"></i> {{ feat }}</li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ===== CTA Banner ===== -->
+<section class="cta-banner">
+  <div class="container-max">
+    <div>
+      <h2 class="cta-banner__headline">Start managing your Project lifecycle today</h2>
+      <p class="cta-banner__body">Join teams already shipping faster with SPLM. Free to start, no credit card required.</p>
+    </div>
+    <div class="cta-banner__actions">
+      <a routerLink="/register" class="btn-white">Create free account</a>
+      <a routerLink="/contact" class="btn-ghost-white">Talk to sales</a>
+    </div>
+  </div>
+</section>

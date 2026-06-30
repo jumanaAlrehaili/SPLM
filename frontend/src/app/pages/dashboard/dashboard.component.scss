@@ -1,0 +1,279 @@
+.layout-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--p-surface-ground);
+  color: var(--p-text-color);
+}
+
+.layout-topbar {
+  height: 64px;
+  padding: 0 1rem;
+  background: var(--p-surface-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--p-content-border-color);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.topbar-logo {
+  max-height: 90px;
+  width: auto;
+  object-fit: contain;
+}
+
+.layout-main-container {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.layout-sidebar {
+  width: 17rem;
+  height: calc(100vh - 64px);
+  position: sticky;
+  top: 64px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--p-surface-card);
+  border-right: 1px solid var(--p-content-border-color);
+  transition: width 0.2s ease, opacity 0.2s ease;
+  will-change: width;
+
+  &.collapsed {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    border-right: none;
+  }
+}
+
+.layout-content {
+  flex: 1;
+  min-width: 0;      /* prevents flex child from expanding past its allotted space */
+  overflow: hidden;  /* clip anything that would bleed into the sidebar */
+  padding: 1.5rem;
+}
+
+// ── Notifications bell + badge ──
+.notif-bell-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--p-red-500, #ef4444);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 0 0 0 2px var(--p-surface-card, #fff);
+}
+
+// ── Notifications panel ──
+.notif-panel {
+  width: 340px;
+  max-width: 90vw;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid var(--p-content-border-color, #e2e8f0);
+  }
+
+  &__title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--p-text-color);
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.75rem;
+    color: var(--p-primary-color, #0ea5e9);
+    cursor: pointer;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 28px 0;
+    color: var(--p-text-secondary-color, #94a3b8);
+
+    i { font-size: 1.6rem; }
+    span { font-size: 0.8rem; }
+  }
+}
+
+.notif-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  transition: background 0.1s;
+
+  &:hover { background: var(--p-surface-hover, #f4f4f4); }
+
+  &--unread {
+    background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.06);
+  }
+
+  &__icon {
+    font-size: 1rem;
+    margin-top: 2px;
+    color: var(--p-primary-color, #0ea5e9);
+    flex-shrink: 0;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+  }
+
+  &__title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--p-text-color);
+  }
+
+  &__message {
+    font-size: 0.78rem;
+    color: var(--p-text-secondary-color, #64748b);
+    line-height: 1.35;
+  }
+
+  &__time {
+    font-size: 0.68rem;
+    color: var(--p-text-secondary-color, #94a3b8);
+    margin-top: 2px;
+  }
+}
+
+:host ::ng-deep {
+  .header-avatar {
+    background: linear-gradient(135deg, var(--p-primary-color), var(--p-primary-600)) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    width: 32px;
+    height: 32px;
+    transition: transform 0.2s ease;
+  }
+
+  .avatar-button:hover .header-avatar {
+    transform: scale(1.1);
+  }
+  :host ::ng-deep {
+  .layout-sidebar {
+    .p-panelmenu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+
+      .p-panelmenu-panel {
+        border: none;
+        background: transparent;
+      }
+
+      .p-panelmenu-header > a {
+        background: transparent;
+        border: none;
+        color: var(--p-text-color);
+        font-weight: 600;
+        padding: 0.75rem 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 6px;
+        
+        &:hover {
+          background: var(--p-surface-hover);
+        }
+      }
+
+      .p-panelmenu-content {
+        background: transparent;
+        border: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .p-menuitem-link {
+        padding: 0.65rem 0.5rem 0.65rem 1.5rem;
+        color: var(--p-text-color);
+        transition: background-color 0.2s, color 0.2s;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          background: var(--p-surface-hover);
+        }
+
+        .p-menuitem-icon {
+          color: var(--p-text-muted-color);
+          margin-right: 0.75rem;
+        }
+
+        .p-panelmenu-icon {
+          margin-right: 0.5rem;
+        }
+      }
+
+      .p-toggleable-content .p-toggleable-content {
+        .p-menuitem-link {
+          padding-left: 2.75rem;
+          
+          .p-menuitem-icon {
+            margin-right: 0.75rem;
+          }
+        }
+      }
+
+      .p-panelmenu-icon {
+        color: var(--p-text-muted-color);
+        font-size: 0.8rem;
+        transition: transform 0.2s;
+      }
+    }
+  }
+}
+}

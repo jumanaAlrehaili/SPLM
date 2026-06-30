@@ -1,0 +1,145 @@
+<p-toast></p-toast>
+
+<!-- ===== Filter Console ===== -->
+@if (enableSearch) {
+  <div class="filter-console" [class.filter-console--active]="hasActiveFilters">
+    <!-- The bar -->
+    <div class="filter-console__bar">
+      <i class="pi pi-search filter-console__icon"></i>
+
+      <input
+        type="text"
+        class="filter-console__input"
+        placeholder="Search people by name or email…"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchInput($event)"
+      />
+
+      @if (searchTerm) {
+        <button class="filter-console__clear-input" (click)="clearSearchTerm()" pTooltip="Clear text">
+          <i class="pi pi-times"></i>
+        </button>
+      }
+
+      <span class="filter-console__divider"></span>
+
+      <!-- Filter pills -->
+      <div class="filter-console__pills">
+        @if (showProjectFilter) {
+          <p-multiSelect
+            [options]="projectOptions()"
+            [(ngModel)]="filterProjectIds"
+            (ngModelChange)="onProjectFilterChange()"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Project"
+            [showHeader]="true"
+            [filter]="true"
+            selectedItemsLabel="{0} projects"
+            [maxSelectedLabels]="1"
+            appendTo="body"
+            styleClass="filter-pill filter-pill--multi"
+          ></p-multiSelect>
+        }
+
+        <p-multiSelect
+          [options]="roleOptions()"
+          [(ngModel)]="filterRoleIds"
+          (ngModelChange)="onRoleFilterChange()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Role"
+          [showHeader]="true"
+          [filter]="false"
+          selectedItemsLabel="{0} roles"
+          [maxSelectedLabels]="1"
+          appendTo="body"
+          styleClass="filter-pill filter-pill--multi"
+        ></p-multiSelect>
+      </div>
+
+      <!-- Live count -->
+      <span class="filter-console__count">
+        @if (loading()) {
+          <i class="pi pi-spin pi-spinner"></i>
+        } @else {
+          <strong>{{ totalRecords }}</strong> {{ totalRecords === 1 ? 'result' : 'results' }}
+        }
+      </span>
+    </div>
+
+    <!-- Active filter chips -->
+    @if (hasActiveFilters) {
+      <div class="filter-console__chips">
+        @if (searchTerm.trim()) {
+          <span class="fchip">
+            <span class="fchip__key">search</span>
+            <span class="fchip__val">{{ searchTerm }}</span>
+            <button class="fchip__x" (click)="clearSearchTerm()"><i class="pi pi-times"></i></button>
+          </span>
+        }
+        @if (showProjectFilter) {
+          @for (pid of filterProjectIds; track pid) {
+            <span class="fchip">
+              <span class="fchip__key">project</span>
+              <span class="fchip__val">{{ projectLabel(pid) }}</span>
+              <button class="fchip__x" (click)="removeProject(pid)"><i class="pi pi-times"></i></button>
+            </span>
+          }
+        }
+        @for (rid of filterRoleIds; track rid) {
+          <span class="fchip">
+            <span class="fchip__key">role</span>
+            <span class="fchip__val">{{ roleLabel(rid) }}</span>
+            <button class="fchip__x" (click)="removeRole(rid)"><i class="pi pi-times"></i></button>
+          </span>
+        }
+        <button class="filter-console__clear-all" (click)="clearAll()">Clear all</button>
+      </div>
+    }
+  </div>
+}
+
+<!-- ===== Table ===== -->
+<p-table
+  [value]="resources()"
+  [paginator]="true"
+  [rows]="pageSize"
+  [rowHover]="true"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} resources"
+  [lazy]="true"
+  [loading]="loading()"
+  [totalRecords]="totalRecords"
+  (onLazyLoad)="onPageChange($event)"
+  styleClass="p-datatable-striped"
+>
+  <ng-template #header>
+    <tr>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th style="width: 12rem">Role</th>
+      <th *ngIf="showProjectColumn">Project</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-resource>
+    <tr>
+      <td><span class="font-semibold">{{ resource.fullName }}</span></td>
+      <td class="text-secondary">{{ resource.email || '—' }}</td>
+      <td><p-tag [value]="resource.roleName || '—'" severity="info"></p-tag></td>
+      <td *ngIf="showProjectColumn">{{ resource.projectName }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="showProjectColumn ? 4 : 3">
+        <div class="resource-empty">
+          <i class="pi pi-users resource-empty__icon"></i>
+          <span>{{ hasActiveFilters ? 'No resources match your search.' : 'No resources found.' }}</span>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

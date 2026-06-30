@@ -1,0 +1,127 @@
+<!-- ===== Hero ===== -->
+<section class="about-hero">
+  <div class="container-max">
+    <p class="eyebrow">About SPLM</p>
+    <h1 class="about-hero__headline">Built for product teams<br>who ship.</h1>
+    <p class="about-hero__body">
+      SPLM was founded on the belief that software product teams deserve better tools — tools
+      that match how engineering and product actually work, not how project management theory
+      says they should.
+    </p>
+  </div>
+</section>
+
+<!-- ===== Mission ===== -->
+<section class="mission-section">
+  <div class="container-max mission-section__inner">
+    <div class="mission-section__content">
+      <p class="eyebrow">Our mission</p>
+      <h2 class="mission-section__headline">Reduce the distance between idea and delivery</h2>
+      <p class="mission-section__body">
+        Every day, product teams lose hours to status meetings, scattered spreadsheets, and
+        miscommunication between engineering and business. SPLM exists to eliminate that waste.
+        We give teams one place to capture requirements, plan work, and track releases — so they
+        spend their time building instead of coordinating.
+      </p>
+      <p class="mission-section__body">
+        We believe the best teams in the world are not necessarily the ones with the largest
+        budgets or the most experience. They are the ones with the clearest systems. SPLM is
+        that system.
+      </p>
+    </div>
+
+    <div class="mission-section__aside">
+      <blockquote class="mission-quote">
+        <p class="mission-quote__text">
+          "The best product management is invisible to the people doing the work."
+        </p>
+        <cite class="mission-quote__cite">— SPLM design principle</cite>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Stats band ===== -->
+<div class="stats-band">
+  <div class="container-max stats-band__grid">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-item">
+        <span class="stat-item__value">{{ stat.value }}</span>
+        <span class="stat-item__label">{{ stat.label }}</span>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- ===== Values ===== -->
+<section class="values-section">
+  <div class="container-max">
+    <div class="section-header">
+      <p class="eyebrow">What we stand for</p>
+      <h2 class="section-headline">Our values</h2>
+    </div>
+
+    <div class="values-grid">
+      @for (value of values; track value.title) {
+        <div class="value-card">
+          <h3 class="value-card__title">{{ value.title }}</h3>
+          <p class="value-card__desc">{{ value.desc }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ===== Story ===== -->
+<section class="story-section">
+  <div class="container-max story-section__inner">
+    <div class="story-section__content">
+      <p class="eyebrow">Our story</p>
+      <h2 class="story-section__headline">We've been on your side of the table</h2>
+      <p class="story-section__body">
+        SPLM was built by engineers and product managers who spent years dealing with the same
+        problems — tracking features in spreadsheets, managing releases over email, and losing
+        critical context when engineers and product teams weren't in the same room.
+      </p>
+      <p class="story-section__body">
+        We knew there had to be a better way. So we built it. SPLM was designed from day one
+        around how modern software teams actually work: asynchronous, cross-functional, and
+        always moving fast.
+      </p>
+      <p class="story-section__body">
+        Today, SPLM is trusted by product teams at companies of all sizes — from early-stage
+        startups shipping their first product to enterprise organizations managing dozens of
+        concurrent releases.
+      </p>
+    </div>
+
+    <div class="story-section__highlight">
+      <div class="highlight-stat">
+        <span class="highlight-stat__number">2021</span>
+        <span class="highlight-stat__label">Founded</span>
+      </div>
+      <div class="highlight-stat">
+        <span class="highlight-stat__number">30+</span>
+        <span class="highlight-stat__label">Countries served</span>
+      </div>
+      <div class="highlight-stat">
+        <span class="highlight-stat__number">99.9%</span>
+        <span class="highlight-stat__label">Platform uptime SLA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA Banner ===== -->
+<section class="cta-banner">
+  <div class="container-max">
+    <div>
+      <h2 class="cta-banner__headline">Ready to see it in action?</h2>
+      <p class="cta-banner__body">Start your free account today. No credit card required.</p>
+    </div>
+    <div class="cta-banner__actions">
+      <a routerLink="/register" class="btn-white">Get started free</a>
+      <a routerLink="/contact" class="btn-ghost-white">Contact sales</a>
+    </div>
+  </div>
+</section>

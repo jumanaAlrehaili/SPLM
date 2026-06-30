@@ -1,0 +1,130 @@
+<div class="detail-container" *ngIf="project() && !loading()">
+  <!-- Back button -->
+  <p-button label="Back to Projects" icon="pi pi-arrow-left" [text]="true" (onClick)="goBack()" class="mb-3"></p-button>
+
+  <!-- Tabs -->
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0"><i class="pi pi-info-circle mr-2"></i>Overview</p-tab>
+      <!-- 3 = Member -->
+      @if (project()!.membershipStatusId >= 3) {
+      <p-tab value="1"><i class="pi pi-list mr-2"></i>Features</p-tab>
+      }
+    </p-tablist>
+
+    <p-tabpanels>
+      <!-- Overview Tab -->
+      <p-tabpanel value="0">
+        <div class="detail-card mt-3">
+          <div class="detail-header">
+            <div>
+              <h2 class="m-0">{{ project()!.name }}</h2>
+              <span class="text-muted">Project #{{ project()!.id }}</span>
+            </div>
+          </div>
+
+          <p-divider></p-divider>
+
+          <!-- Details Grid -->
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="detail-label"><i class="pi pi-user mr-2"></i>Created By</span>
+              <span class="detail-value font-semibold">{{ project()!.creatorName || 'Unknown' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label"><i class="pi pi-calendar mr-2"></i>Created At</span>
+              <span class="detail-value">{{ project()!.createdAt | date:'medium' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label"><i class="pi pi-money-bill mr-2"></i>Budget</span>
+              <span class="detail-value font-semibold">{{ project()!.budget !== null && project()!.budget !== undefined
+                ? (project()!.budget | currency:'USD':'symbol':'1.0-2') : '—' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label"><i class="pi pi-clock mr-2"></i>Duration</span>
+              <span class="detail-value font-semibold">{{ getDurationText(project()!.duration, project()!.durationUnit)
+                }}</span>
+            </div>
+          </div>
+
+          <p-divider></p-divider>
+
+          <!-- Description -->
+          <div class="detail-description mb-5">
+            <h4 class="m-0 mb-3"><i class="pi pi-align-left mr-2"></i>Description</h4>
+            <p class="m-0 line-height-3 text-700">{{ project()!.description }}</p>
+          </div>
+
+          <p-divider></p-divider>
+
+          <!-- Resources / Team -->
+          <div class="detail-resources" *ngIf="project()?.groupedResources?.length">
+
+            <div class="flex justify-content-between align-items-center mb-4">
+              <h4 class="m-0"><i class="pi pi-users mr-2"></i>Project Team</h4>
+
+              <!-- 4 = Owner (PM) -->
+              <p-button *ngIf="project()?.membershipStatusId === 4" label="Manage Project Leads" icon="pi pi-user-edit"
+                styleClass="p-button-sm p-button-outlined" (onClick)="leadsDialog.showDialog()">
+              </p-button>
+
+            </div>
+
+            <div *ngFor="let group of project()!.groupedResources" class="mb-5">
+              <div class="flex align-items-center mb-3 border-left-2 border-primary pl-2">
+                <span class="text-primary font-bold uppercase text-xs tracking-wider">{{ group.roleName }}</span>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <div *ngFor="let res of group.members"
+                  class="flex align-items-center p-2 surface-50 border-1 border-round-md border-200 hover:surface-100 transition-duration-200"
+                  style="width: fit-content; min-width: 140px;">
+
+                  <p-avatar [label]="(res.userName || 'U').charAt(0).toUpperCase()" shape="circle" size="normal"
+                    styleClass="bg-primary text-white shadow-1">
+                  </p-avatar>
+
+                  <div class="ml-2">
+                    <div class="flex align-items-center">
+                      <div class="text-sm font-medium text-800">{{ res.userName }}</div>
+                      <i *ngIf="res.isLeader" class="pi pi-star-fill text-yellow-500 ml-2" style="font-size: 0.7rem;"
+                        title="Project Leader"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- leads -->
+          <app-project-leads #leadsDialog [projectId]="projectId()" [canManage]="project()!.membershipStatusId >= 3"></app-project-leads>
+        </div>
+      </p-tabpanel>
+
+      <!-- Features Tab -->
+      @if (project()!.membershipStatusId >= 3) {
+      <p-tabpanel value="1">
+        <div class="detail-card mt-3">
+          <app-feature-list [projectId]="projectId()"></app-feature-list>
+        </div>
+      </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading()" class="detail-container flex justify-content-center align-items-center"
+  style="min-height: 300px;">
+  <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+</div>
+
+<!-- Not found -->
+<div *ngIf="!project() && !loading()" class="detail-container">
+  <p-button label="Back to Projects" icon="pi pi-arrow-left" [text]="true" (onClick)="goBack()" class="mb-3"></p-button>
+  <div class="detail-card text-center p-6">
+    <i class="pi pi-exclamation-triangle text-5xl mb-3" style="display:block; color: var(--p-text-muted-color)"></i>
+    <h3>Project Not Found</h3>
+    <p class="text-muted">The requested project does not exist or has been removed.</p>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+.features-wrapper {
+  margin-top: 1rem;
+}
+
+::v-deep(.p-datatable) {
+  .p-datatable-header {
+    background: var(--p-surface-card) !important;
+    border-color: var(--p-content-border-color) !important;
+    padding: 1rem !important;
+  }
+
+  .p-datatable-thead > tr > th {
+    background: var(--p-surface-hover) !important;
+    color: var(--p-text-color) !important;
+    border-color: var(--p-content-border-color) !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 1rem !important;
+  }
+
+  .p-datatable-tbody > tr {
+    background: var(--p-surface-card) !important;
+    color: var(--p-text-color) !important;
+    transition: background-color 0.2s ease;
+
+    & > td {
+      border-color: var(--p-content-border-color) !important;
+      padding: 1rem !important;
+    }
+
+    &:hover {
+      background: var(--p-surface-hover) !important;
+    }
+  }
+
+  /* Paginator structure */
+  .p-paginator {
+    background: var(--p-surface-card) !important;
+    border-color: var(--p-content-border-color) !important;
+    padding: 0.75rem !important;
+    
+    .p-paginator-page, .p-paginator-next, .p-paginator-last, .p-paginator-first, .p-paginator-prev {
+      color: var(--p-text-muted-color);
+      
+      &.p-highlight {
+        background: var(--p-primary-color-transparent) !important;
+        color: var(--p-primary-color) !important;
+      }
+    }
+  }
+}
+
+.text-muted {
+  color: var(--p-text-muted-color);
+}

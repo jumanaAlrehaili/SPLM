@@ -1,0 +1,47 @@
+<p-toast></p-toast>
+
+<div class="p-4 mx-auto" style="max-width: 1200px;">
+  <!-- Header & Project Switcher -->
+  <div class="flex justify-content-between align-items-center mb-4 flex-wrap gap-3 surface-card p-4 border-round-xl shadow-1">
+    <div class="flex flex-column gap-1">
+      <h1 class="m-0 text-900 font-bold text-2xl tracking-tight"><i class="pi pi-calendar mr-2 text-primary"></i>Release Planning</h1>
+      <p class="text-secondary text-sm m-0">Create roadmaps, manage releases, and assign project features.</p>
+    </div>
+
+    <!-- Project Dropdown Switcher -->
+    <div class="flex align-items-center gap-2" *ngIf="selectedProjectId() && projectOptions.length > 0">
+      <span class="text-secondary text-sm font-semibold">Active Project:</span>
+      <p-select 
+        [options]="projectOptions" 
+        [ngModel]="selectedProjectId()" 
+        (ngModelChange)="onProjectChange($event)"
+        optionLabel="label" 
+        optionValue="value" 
+        placeholder="Switch Project..."
+        styleClass="w-15rem"
+        appendTo="body"
+      ></p-select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading() && projects().length === 0" class="text-center py-8">
+    <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+  </div>
+
+  <!-- No Projects Available State -->
+  <div *ngIf="!loading() && projects().length === 0" class="flex flex-column align-items-center justify-content-center py-6">
+    <div class="surface-card p-6 border-round-xl shadow-1 text-center w-full max-w-30rem">
+      <i class="pi pi-folder-open text-6xl text-primary mb-3"></i>
+      <h3 class="text-900 font-bold m-0 mb-2">No Projects Found</h3>
+      <p class="text-secondary text-sm m-0">
+        You are not assigned to any projects with membership privileges yet.
+      </p>
+    </div>
+  </div>
+
+  <!-- Release Planning workspace -->
+  <div *ngIf="selectedProjectId()">
+    <app-release-planning [projectId]="selectedProjectId()!"></app-release-planning>
+  </div>
+</div>

@@ -1,0 +1,424 @@
+// --- Color & Design Variables ---
+$active-bg: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.08);
+$active-border: var(--p-primary-color, #0ea5e9);
+$light-bg: #f8fafc;
+$hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+
+.release-planning-container {
+  display: block;
+  min-height: 400px;
+}
+
+// Custom Scrollbar styling
+.plan-list-wrapper, 
+.features-checklist-wrapper, 
+.max-h-12rem {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-round: 3px;
+  }
+}
+
+// Background overrides for elements
+.bg-light {
+  background-color: $light-bg !important;
+}
+
+.bg-primary-light {
+  background-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.12) !important;
+}
+
+// --- Plan Sidebar Item Styling ---
+.plan-item-card {
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+  background-color: var(--p-content-background, #ffffff);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.5);
+  }
+
+  &.active {
+    background-color: $active-bg !important;
+    border-color: $active-border !important;
+    box-shadow: 0 4px 12px rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.15);
+    
+    .font-bold {
+      color: var(--p-primary-color, #0ea5e9);
+    }
+  }
+
+  // Smaller buttons inside sidebar card
+  ::ng-deep .p-button-sm-icon {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    padding: 0 !important;
+
+    .p-button-icon {
+      font-size: 0.75rem !important;
+    }
+  }
+}
+
+// Truncation helper
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Accent border color for delete and edit actions
+.text-danger {
+  color: var(--p-red-500, #ef4444);
+}
+
+// --- Header Card Styling ---
+.header-card {
+  border-left: 5px solid var(--p-primary-color, #0ea5e9);
+  background: linear-gradient(135deg, var(--p-content-background, #ffffff) 0%, rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.02) 100%);
+}
+
+// --- Release Card Layout & Animations ---
+.release-card {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: var(--p-content-background, #ffffff);
+  border: 1px solid var(--p-content-border-color, #e2e8f0);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $hover-shadow;
+    border-top-color: var(--p-primary-600, #0284c7) !important;
+  }
+}
+
+// --- Nested Feature Mini Row ---
+.feature-row-chip {
+  transition: all 0.15s ease-in-out;
+  border-color: var(--p-content-border-color, #f1f5f9) !important;
+
+  &:hover {
+    border-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.3) !important;
+    background-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.02) !important;
+  }
+}
+
+// Accent Tag adjustments
+.text-2xs {
+  font-size: 0.65rem !important;
+}
+.text-3xs {
+  font-size: 0.6rem !important;
+}
+
+.shrink-none {
+  flex-shrink: 0;
+}
+
+// Dialog input elements styling
+.roadmap-form-dialog {
+  textarea {
+    border: 1px solid var(--p-content-border-color, #cbd5e1);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    color: var(--p-text-color, #334155);
+    background: var(--p-content-background, #ffffff);
+
+    &:focus {
+      outline: 0;
+      border-color: var(--p-primary-color, #0ea5e9);
+      box-shadow: 0 0 0 2px rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.2);
+    }
+  }
+}
+
+.stage-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid var(--p-content-border-color, #cbd5e1);
+  border-radius: 8px;
+  background-color: var(--p-content-background, #ffffff);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+
+  &:hover {
+    border-color: var(--p-primary-color, #0ea5e9);
+    background-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.02);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  }
+}
+
+// Checklist dialog item hover
+.checklist-item {
+  &:hover {
+    background-color: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.03);
+  }
+}
+input[type="checkbox"] {
+  border-radius: 4px;
+  
+  &:checked {
+    background-color: var(--p-primary-color, #0ea5e9);
+    border-color: var(--p-primary-color, #0ea5e9);
+  }
+}
+
+// ===================================================================
+// STAGES PIPELINE UI
+// ===================================================================
+
+// Info bar above pipeline
+.stages-info-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.06);
+  border-left: 3px solid var(--p-primary-color, #0ea5e9);
+  border-radius: 0 4px 4px 0;
+}
+
+// Outer scrollable wrapper
+.stages-pipeline-wrapper {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+// Horizontal flex container for nodes + connectors
+.stages-pipeline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  min-width: max-content;
+  padding: 8px 4px;
+}
+
+// Wrapper around each node + connector pair
+.stage-node-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+// The stage card itself
+.stage-node {
+  width: 180px;
+  min-height: 220px;
+  padding: 16px 14px 14px;
+  border: 2px solid var(--p-content-border-color, #e2e8f0);
+  border-radius: 10px;
+  background: var(--p-content-background, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  // Sequence badge (top-left corner)
+  &__seq {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--p-content-border-color, #e2e8f0);
+    color: var(--p-text-secondary-color, #64748b);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Status icon row
+  &__status-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-top: 8px;
+  }
+
+  // Stage name
+  &__name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--p-text-color, #1e293b);
+    margin: 0;
+    max-width: 152px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Date grid
+  &__dates {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 8px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  &__date-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--p-text-secondary-color, #94a3b8);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+
+  &__date-value {
+    font-size: 0.7rem;
+    color: var(--p-text-color, #334155);
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+
+  // Status tag
+  &__status-tag {
+    margin-top: 2px;
+  }
+
+  // Action buttons row
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    margin-top: auto;
+
+    ::ng-deep .stage-action-btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 0.75rem !important;
+      padding: 6px 10px !important;
+    }
+  }
+
+  // ===== Status variants =====
+  &--not-started {
+    border-color: var(--p-content-border-color, #e2e8f0);
+
+    .stage-node__status-icon {
+      color: var(--p-text-secondary-color, #94a3b8);
+    }
+
+    .stage-node__seq {
+      background: var(--p-content-border-color, #e2e8f0);
+      color: var(--p-text-secondary-color, #64748b);
+    }
+  }
+
+  &--in-progress {
+    border-color: var(--p-primary-color, #0ea5e9);
+    box-shadow: 0 0 0 3px rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.12);
+    background: rgba(var(--p-primary-color-rgb, 14, 165, 233), 0.03);
+
+    .stage-node__status-icon {
+      color: var(--p-primary-color, #0ea5e9);
+    }
+
+    .stage-node__seq {
+      background: var(--p-primary-color, #0ea5e9);
+      color: #ffffff;
+    }
+
+    .stage-node__name {
+      color: var(--p-primary-color, #0ea5e9);
+    }
+  }
+
+  &--completed {
+    border-color: var(--p-green-500, #22c55e);
+    background: rgba(34, 197, 94, 0.04);
+
+    .stage-node__status-icon {
+      color: var(--p-green-500, #22c55e);
+    }
+
+    .stage-node__seq {
+      background: var(--p-green-500, #22c55e);
+      color: #ffffff;
+    }
+
+    .stage-node__name {
+      color: var(--p-green-600, #16a34a);
+    }
+  }
+}
+
+// Connector arrow between stage cards
+.stage-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  flex-shrink: 0;
+
+  &__icon {
+    font-size: 1rem;
+    color: var(--p-content-border-color, #cbd5e1);
+  }
+}
+
+// Lock icon for blocked stages
+.stage-locked-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  cursor: default;
+}
+
+// Progress bar
+.stages-progress-section {
+  border-top: 1px solid var(--p-content-border-color, #e2e8f0);
+  padding-top: 16px;
+}
+
+.stages-progress-bar {
+  height: 6px;
+  background: var(--p-content-border-color, #e2e8f0);
+  border-radius: 3px;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: var(--p-primary-color, #0ea5e9);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+}
+
+// ===================================================================
+// Media query for responsive sidebar borders in single card layout
+@media (max-width: 991px) {
+  .plan-sidebar {
+    border-right: none !important;
+    border-bottom: 1px solid var(--p-content-border-color, #e2e8f0);
+    padding-right: 0 !important;
+    padding-bottom: 1.5rem !important;
+    margin-bottom: 1rem;
+  }
+  .pl-3 {
+    padding-left: 0 !important;
+  }
+}

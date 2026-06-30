@@ -1,0 +1,125 @@
+<div class="landing">
+
+  <!-- Utility bar -->
+  <div class="utility-bar">
+    <div class="container-max utility-bar__inner">
+      <span class="utility-bar__text">Enterprise Software Project Lifecycle Management</span>
+      <div class="utility-bar__links">
+        <a href="#" class="utility-bar__link">Documentation</a>
+        <a href="#" class="utility-bar__link">Support</a>
+        <a routerLink="/contact" class="utility-bar__link">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top navigation -->
+  <nav class="top-nav">
+    <div class="container-max top-nav__inner">
+
+      <a routerLink="/" class="top-nav__logo">
+        <img src="/assets/images/SPLM_logo.png" alt="SPLM" class="top-nav__logo-img" />
+      </a>
+
+      <ul class="top-nav__links">
+        <li>
+          <a routerLink="/" routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}" class="top-nav__link">Home</a>
+        </li>
+        <li><a routerLink="/about" routerLinkActive="active" class="top-nav__link">About</a></li>
+        <li><a routerLink="/pricing" routerLinkActive="active" class="top-nav__link">Pricing</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active" class="top-nav__link">Contact</a></li>
+      </ul>
+
+      <div class="top-nav__actions">
+        <a routerLink="/login" class="btn-ghost">Sign in</a>
+        <a routerLink="/register" class="btn-primary">Get started</a>
+      </div>
+
+      <button class="top-nav__hamburger" (click)="toggleMobileMenu()" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    @if (mobileMenuOpen()) {
+      <div class="mobile-menu">
+        <ul class="mobile-menu__list">
+          <li><a routerLink="/" (click)="toggleMobileMenu()" class="mobile-menu__link">Home</a></li>
+          <li><a routerLink="/about" (click)="toggleMobileMenu()" class="mobile-menu__link">About</a></li>
+          <li><a routerLink="/pricing" (click)="toggleMobileMenu()" class="mobile-menu__link">Pricing</a></li>
+          <li><a routerLink="/contact" (click)="toggleMobileMenu()" class="mobile-menu__link">Contact</a></li>
+          <li><a routerLink="/login" (click)="toggleMobileMenu()" class="mobile-menu__link">Sign in</a></li>
+          <li>
+            <a routerLink="/register" (click)="toggleMobileMenu()" class="btn-primary mobile-menu__cta">
+              Get started
+            </a>
+          </li>
+        </ul>
+      </div>
+    }
+  </nav>
+
+  <!-- Page content -->
+  <main class="landing__main">
+    <router-outlet />
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container-max footer__inner">
+
+      <div class="footer__brand">
+        <img src="/assets/images/SPLM_logo.png" alt="SPLM" class="footer__logo" />
+        <p class="footer__tagline">Enterprise Software Project Lifecycle Management</p>
+        <p class="footer__brand-desc">
+          Helping product teams plan, track, and ship software with clarity and confidence.
+        </p>
+      </div>
+
+      <div class="footer__columns">
+        <div class="footer__col">
+          <h4 class="footer__col-title">Product</h4>
+          <ul class="footer__col-links">
+            <li><a routerLink="/pricing" class="footer__link">Pricing</a></li>
+            <li><a href="#" class="footer__link">Changelog</a></li>
+            <li><a href="#" class="footer__link">API reference</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Company</h4>
+          <ul class="footer__col-links">
+            <li><a routerLink="/about" class="footer__link">About</a></li>
+            <li><a routerLink="/contact" class="footer__link">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Resources</h4>
+          <ul class="footer__col-links">
+            <li><a href="#" class="footer__link">Documentation</a></li>
+            <li><a href="#" class="footer__link">Support center</a></li>
+            <li><a href="#" class="footer__link">Community</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 class="footer__col-title">Account</h4>
+          <ul class="footer__col-links">
+            <li><a routerLink="/login" class="footer__link">Sign in</a></li>
+            <li><a routerLink="/register" class="footer__link">Create account</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <div class="container-max footer__bottom-inner">
+        <span class="footer__copyright">© {{ currentYear }} SPLM. All rights reserved.</span>
+        <div class="footer__legal-links">
+          <a href="#" class="footer__legal-link">Privacy policy</a>
+          <a href="#" class="footer__legal-link">Terms of service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</div>

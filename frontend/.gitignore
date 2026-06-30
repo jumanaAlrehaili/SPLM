@@ -1,0 +1,72 @@
+# =========================
+# Angular
+# =========================
+.angular/
+dist/
+node_modules/
+coverage/
+
+# Environment files
+src/environments/*.local.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# .NET
+# =========================
+bin/
+obj/
+out/
+
+# User-specific
+*.user
+*.rsuser
+*.suo
+
+# Visual Studio
+.vs/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# =========================
+# Build / Temp
+# =========================
+*.log
+*.tmp
+*.cache
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Database
+# =========================
+*.mdf
+*.ldf
+
+# =========================
+# Package files
+# =========================
+*.nupkg
+
+# =========================
+# Certificates / Secrets
+# =========================
+*.pem
+*.key
+*.pfx
+appsettings.Development.json

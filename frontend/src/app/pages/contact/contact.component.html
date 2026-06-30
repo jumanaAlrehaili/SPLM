@@ -1,0 +1,185 @@
+<!-- ===== Hero ===== -->
+<section class="contact-hero">
+  <div class="container-max">
+    <p class="eyebrow">Get in touch</p>
+    <h1 class="contact-hero__headline">Contact us</h1>
+    <p class="contact-hero__body">
+      Have a question, need a product demo, or want to discuss enterprise options?
+      We'd love to hear from you.
+    </p>
+  </div>
+</section>
+
+<!-- ===== Contact body ===== -->
+<section class="contact-body">
+  <div class="container-max contact-body__inner">
+
+    <!-- Left: Contact info -->
+    <aside class="contact-info">
+      <h2 class="contact-info__title">How can we help?</h2>
+
+      <div class="contact-info__item">
+        <div class="contact-info__icon"><i class="pi pi-envelope"></i></div>
+        <div>
+          <p class="contact-info__item-label">General inquiries</p>
+          <p class="contact-info__item-value">hello&#64;splm.io</p>
+        </div>
+      </div>
+
+      <div class="contact-info__item">
+        <div class="contact-info__icon"><i class="pi pi-building"></i></div>
+        <div>
+          <p class="contact-info__item-label">Enterprise sales</p>
+          <p class="contact-info__item-value">enterprise&#64;splm.io</p>
+        </div>
+      </div>
+
+      <div class="contact-info__item">
+        <div class="contact-info__icon"><i class="pi pi-clock"></i></div>
+        <div>
+          <p class="contact-info__item-label">Response time</p>
+          <p class="contact-info__item-value">Within one business day</p>
+        </div>
+      </div>
+
+      <div class="contact-info__divider"></div>
+
+      <h3 class="contact-info__reasons-title">Common inquiries</h3>
+      <ul class="contact-info__reasons">
+        <li><i class="pi pi-chevron-right"></i> Product demo and walkthroughs</li>
+        <li><i class="pi pi-chevron-right"></i> Enterprise pricing and contracts</li>
+        <li><i class="pi pi-chevron-right"></i> Technical integration support</li>
+        <li><i class="pi pi-chevron-right"></i> Partnership opportunities</li>
+        <li><i class="pi pi-chevron-right"></i> Press and media</li>
+      </ul>
+    </aside>
+
+    <!-- Right: Form -->
+    <div class="contact-form-wrap">
+      @if (submitted()) {
+        <div class="contact-success">
+          <div class="contact-success__icon">
+            <i class="pi pi-check-circle"></i>
+          </div>
+          <h2 class="contact-success__title">Message received</h2>
+          <p class="contact-success__body">
+            Thank you for reaching out. Our team will respond within one business day.
+          </p>
+          <button class="btn-primary" (click)="resetForm()">Send another message</button>
+        </div>
+      } @else {
+        <form class="contact-form" #contactForm="ngForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fullName">
+                Full name <span class="form-required">*</span>
+              </label>
+              <input
+                id="fullName"
+                name="name"
+                type="text"
+                class="form-input"
+                [(ngModel)]="model.name"
+                #nameField="ngModel"
+                required
+                placeholder="Jane Smith"
+              />
+              @if (nameField.invalid && nameField.touched) {
+                <span class="form-error">Full name is required</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="workEmail">
+                Work email <span class="form-required">*</span>
+              </label>
+              <input
+                id="workEmail"
+                name="email"
+                type="email"
+                class="form-input"
+                [(ngModel)]="model.email"
+                #emailField="ngModel"
+                required
+                email
+                placeholder="jane@company.com"
+              />
+              @if (emailField.invalid && emailField.touched) {
+                <span class="form-error">A valid work email is required</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="company">Company</label>
+              <input
+                id="company"
+                name="company"
+                type="text"
+                class="form-input"
+                [(ngModel)]="model.company"
+                placeholder="Acme Corp"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="subject">
+                Subject <span class="form-required">*</span>
+              </label>
+              <select
+                id="subject"
+                name="subject"
+                class="form-select"
+                [(ngModel)]="model.subject"
+                #subjectField="ngModel"
+                required
+              >
+                <option value="">Select a topic</option>
+                <option value="demo">Product demo request</option>
+                <option value="enterprise">Enterprise pricing</option>
+                <option value="support">Technical support</option>
+                <option value="partnership">Partnership</option>
+                <option value="press">Press and media</option>
+                <option value="other">Other</option>
+              </select>
+              @if (subjectField.invalid && subjectField.touched) {
+                <span class="form-error">Please select a subject</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">
+              Message <span class="form-required">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              class="form-textarea"
+              [(ngModel)]="model.message"
+              #messageField="ngModel"
+              required
+              rows="6"
+              placeholder="Tell us how we can help..."
+            ></textarea>
+            @if (messageField.invalid && messageField.touched) {
+              <span class="form-error">Message is required</span>
+            }
+          </div>
+
+          <div class="form-footer">
+            <button
+              type="submit"
+              class="btn-primary btn-submit"
+              [disabled]="contactForm.invalid"
+            >
+              Send message <i class="pi pi-send"></i>
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+
+  </div>
+</section>

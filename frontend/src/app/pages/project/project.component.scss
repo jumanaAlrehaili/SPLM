@@ -1,0 +1,86 @@
+.projects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    color: var(--p-text-color);
+  }
+
+  p {
+    color: var(--p-text-muted-color);
+    font-size: 0.9rem;
+  }
+}
+
+.projects-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.search-field {
+  min-width: 250px;
+}
+
+.projects-table-wrapper {
+  background: var(--p-surface-card);
+  border-radius: 12px;
+  border: 1px solid var(--p-content-border-color);
+  overflow: hidden;
+}
+
+.description-cell {
+  max-width: 350px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-secondary {
+  color: var(--p-text-muted-color) !important;
+}
+
+/* ── Pending Requests ── */
+
+.requester-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 0.9rem;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ── Join Dialog ── */
+
+.join-project-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--p-surface-ground);
+  border-radius: 8px;
+  border: 1px solid var(--p-content-border-color);
+
+  i {
+    color: var(--p-primary-color);
+    font-size: 1.25rem;
+  }
+}

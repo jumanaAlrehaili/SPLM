@@ -1,0 +1,23 @@
+.project-select-btn {
+  background-color: var(--p-content-background, #ffffff);
+  color: inherit;
+  font-family: inherit;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border-color: var(--p-primary-color, #0ea5e9) !important;
+    
+    .font-bold {
+      color: var(--p-primary-color, #0ea5e9);
+    }
+  }
+}
+
+// Spacing utility overrides
+.gap-2 {
+  gap: 0.5rem !important;
+}
+.gap-3 {
+  gap: 1rem !important;
+}
