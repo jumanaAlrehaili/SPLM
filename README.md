@@ -85,3 +85,59 @@ SPLM/
 ├── CODEOWNERS
 ├── LICENCE
 └── README.md
+```
+---
+## ⚙️ Getting Started
+
+### Prerequisites
+
+Make sure the following tools are installed on your machine:
+
+- .NET SDK
+- Node.js
+- Angular CLI
+- SQL Server
+- Visual Studio or Visual Studio Code
+
+---
+
+## 🔐 Backend Configuration
+
+For security reasons, the real `appsettings.json` file is not included in this repository.
+
+An example configuration file is provided:
+
+```bash
+backend/src/Api/appsettings.example.json
+```
+
+To run the backend locally, create your own `appsettings.json` file based on the example file.
+
+### Windows
+
+Navigate to the API folder:
+
+```bash
+cd backend/src/Api
+```
+
+Copy the example file:
+
+```bash
+copy appsettings.example.json appsettings.json
+```
+
+### macOS / Linux
+
+```bash
+cd backend/src/Api
+cp appsettings.example.json appsettings.json
+```
+
+Then update the following values inside `appsettings.json`:
+
+- Database connection string
+- JWT secret key
+- Email SMTP credentials, if email features are used
+
+
