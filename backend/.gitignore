@@ -771,3 +771,17 @@ Backup of *.doc*
 
 # Visio autosave temporary files
 *.~vsd*
+
+# Local app settings with secrets
+**/appsettings.json
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/appsettings.Local.json
+
+# Keep example configuration files
+!**/appsettings.example.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
